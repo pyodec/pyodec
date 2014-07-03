@@ -6,10 +6,10 @@ import time
 import gzip
 
 """
-U of Utah CL-31 message type: epoch times stored *before* the message
+CL-31 message #2 with epoch timestamps
 """
 
-class uucl31D(FileDecoder):
+class Epcl31D(FileDecoder):
     def on_chunk(self, message):
         # this is an end-spliced message, so we will get the timestamp
         ob = message.split(unichr(001))
@@ -39,7 +39,7 @@ class uucl31D(FileDecoder):
             yield d
         gzfh.close()
 
-decoder = uucl31D(inherit=msgdecode)
+decoder = Epcl31D(inherit=msgdecode)
 # prepend DATTIM to the variable list by adding and resetting the variable. A necessary hijack
 dattim_var = VariableList()
 dattim_var.addvar('DATTIM','seconds since 1970-01-01 00:00 UTC',int,1,'S') 

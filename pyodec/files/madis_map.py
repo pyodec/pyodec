@@ -1,15 +1,9 @@
 """
-This is the first NetCDF-based decoder. This will produce any number of the
-120+ stations within the MADIS Multi-Agency Profiler network... Many of these
-variables are currently foreign to me...
-
-This decoder is going to be much more sophistocated than previous attempts.
-It will need to produce a dict of values in self.vars and self.fixed_vars,
-which update automatically with the data format.....? That might actually
-be unnecessary
+This decodes MADIS Multi-agency profiler (MAP) NetCDFs to the best of our ability.
+This uses pyodec and the state variable to distribute data for mulitple stations. 
+All fixed variables from this dataset are also included in the data. probably a bug, but a tolerable one.
 """
-from decoders.core import FileDecoder, VariableList, FixedVariableList
-from decoders.messages.vaisalacl31 import decoder as msgdecode
+from pyodec.core import FileDecoder, VariableList, FixedVariableList
 import numpy as np
 import os
 import time
@@ -19,25 +13,28 @@ import scipy.io.netcdf
 nc = scipy.io.netcdf.netcdf_file
 
 class MapDecoder(FileDecoder):
-    def decode(self, fpath):
+    vars = VariableList()
+    fixed_vars = FixedVariableList()
+    def decode_proc(self, fpath, length, **kwargs):
         # each file contains only a single observation from a number of stations.
-        # gather metadata and data for each station, and yield it as a dictionary
-        # of the proper format.
-        self.station_collection=True
-        # define the variables as dictionaries
-        self.vars = {}
-        self.fixed_vars = {}
-        with gzip.open(fpath,'r') as g:
+        # gather metadata and data for each station, 
+        # variables are defined for each iteration
+        # 
+        self.vars = False
+        self.fixed_vars = False
+        with self.open_ascii(fpath) as g:
             # and open the netcdf
             src = nc(g)
             i=0
+            # loop through the stations we found
             for stnid in map(''.join,src.variables[src.idVariables]):
                 data = {}
-                data['stnid'] = stnid
-                data['loc'] = [src.variables['latitude'][i],
-                               src.variables['longitude'][i],
-                               src.variables['elevation'][i]]
-                data['metacols'] = [
+                self.state['identifier']= stnid
+                # and some specialty variables - can be used if they are taken
+                self.state['loc'] = [src.variables['latitude'][i],
+                                     src.variables['longitude'][i],
+                                     src.variables['elevation'][i]]
+                self.state['metacols'] = [
                     'STID',
                     'OWNER',
                     'PROVIDER',
@@ -45,70 +42,65 @@ class MapDecoder(FileDecoder):
                     'NETWORK',
                     'name',
                 ]
-                data['metavars'] = [
+                self.state['metavars'] = [
                     ''.join(stnid),
                     ''.join(src.variables['dataProvider'][i]),
                     'MADIS',
                     src.variables['stationType'][i], # some friggin number
                     'MAP',
-                    '', # this is sad, but true
+                    'NPN',
+                    '', # this is sad, but true - full string name is not included in the files
                     
                 ]
                 # now determine the dataset characteristics as best we can...
-                self.vars[data['stnid']] = VariableList()
-                self.fixed_vars[data['stnid']] = FixedVariableList()
+                self.vars = VariableList()
+                self.fixed_vars = FixedVariableList()
+                # and create the row object, starting with the
                 row = [src.variables[src.timeVariables][i]]
-                # save some profile information
-                row.append(src.variables['mixingLayer'][i])
-                self.vars[data['stnid']].addvar('MixingLayer','float32',1,src.variables['mixingLayer'].units)
+                self.vars.addvar('DATTIM','Observation Time',int,1,'Seconds since 1970-01-01 00:00:00 UTC')
                 # determine some scope information for this station
-                levels = max(src.variables['numLevels'][i]) #DANGEROUS!!!!
-                if levels == 0:
-                    #um, no levels of data? goodbye.
-                    i+=1
-                    continue
-                # grab the SNR - vertical beam
-                row.append(src.variables['signalNoiseRatio'][i,2,:levels])
-                self.vars[data['stnid']].addvar('SNR','float32',(levels,),'')
+                # grab the levels of data for this station. if the length is 0, then move on
+                lvls = src.variables['levels'][i]
                 beams = src.variables['numBeamsUsed'][i]
-                rass = src.variables['numRASSModesUsed'][i]
-                if True: #rass > 0:
-                    # grab temperature?!
-                    row.append(src.variables['temperature'][i,:levels])
-                    self.vars[data['stnid']].addvar('TEMP','float32',(levels,),src.variables['temperature'].units)
-                wind = src.variables['numWindModesUsed'][i]
-                if True: #wind > 0:
-                    row.append(src.variables['uComponent'][i,:levels])
-                    self.vars[data['stnid']].addvar('U','float32',(levels,),src.variables['uComponent'].units)
-                    row.append(src.variables['uStdDevComponent'][i,:levels])
-                    self.vars[data['stnid']].addvar('UDEV','float32',(levels,),src.variables['uStdDevComponent'])
-                    row.append(src.variables['vComponent'][i,:levels])
-                    self.vars[data['stnid']].addvar('V','float32',(levels,),src.variables['vComponent'].units)
-                    row.append(src.variables['vStdDevComponent'][i,:levels])
-                    self.vars[data['stnid']].addvar('VDEV','float32',(levels,),src.variables['vStdDevComponent'])
-                    row.append(src.variables['wComponent'][i,:levels])
-                    self.vars[data['stnid']].addvar('W','float32',(levels,),src.variables['wComponent'].units)
-                    row.append(src.variables['wStdDevComponent'][i,:levels])
-                    self.vars[data['stnid']].addvar('WDEV','float32',(levels,),src.variables['wStdDevComponent'])
-                data['data']=[tuple(row)]
-                # save heights as A FIXED VAR
-                #FIXME - this is more complicated than this... but I couldn't figure it out
-                self.fixed_vars[data['stnid']].addvar('HEIGHT','mAGL','float32',src.variables['levels'][i][:levels])
-                #else:
-                #    for i in range(beams):
-                #        self.fixed_vars[data['stnid']].addvar('HEIGHT{}'.format(i),src.variables['levels'].units,'float32',src.variables['levels'][i][:levels[i]])
-                    
-                yield data
+                # a wee-bit of quality control.
+                if len(lvls[:]) == 0 or beams == 0:
+                    i+=1
+                    # skip this station
+                    continue
+                self.fixed_vars.addvar('HEIGHT','mAGL','float32',lvls[:])
+                self.fixed_vars.addvar('BEAMSUSED','','int',src.variables['numBeamsUsed'][i])
+                self.fixed_vars.addvar('RASSMODESUSED','','int',src.variables['numRASSModesUsed'][i])
+                self.fixed_vars.addvar('BEAMNAMES','','|S8', map(''.join,src.variables['beamNames'][i]))
+                for v in src.variables:
+                    # loop through the variables - please let the variables be fixed!!!!
+                    var = src.variables[v]
+                    if not var.isrec:
+                        # the variable is not record-based, so, move along
+                        continue
+                    # grab the actual data for this station of this variable
+                    vardat = var[i]
+                    vardtype = str(vardat.dtype)
+                    # but, these datatypes are not really allowed by pytables, so fix
+                    if "i" in vardtype:
+                        vardtype='int'
+                    elif 'f' in vardtype:
+                        vardtype='float32'
+                    varshp = var.shape[1:] # the first dim is the staion, so, not that
+                    varunit = ''
+                    varname = ''
+                    varrange = [0,0]
+                    attrs = dir(var)
+                    if 'long_name' in attrs:
+                        varname = var.long_name
+                    else: varname = ''
+                    if 'units' in attrs:
+                        varunit  = var.units
+                    if 'valid_range' in dir(var):
+                        varrange = var.valid_range
+                    # record the variable
+                    row.append(vardat)
+                    self.vars.addvar(v,varname,vardtype,varshp,varunit,mn=varrange[0],mx=varrange[1])
+                yield [tuple(row)]
                 i+=1
-                
-                
-    
-decoder = MapDecoder(vars=True)
-if __name__ == '__main__':
-    c=0
-    for stn in decoder.decode('/data/ASN/RAW/MMAP_201404/71fc2aa1d86a260e4d7891ecef506131.dat.gz'):
-        ##print len(decoder.get_dtype(stn['stnid'])),
-        c+=1
-        print stn['stnid'], c, stn['metavars']
-        #print np.array(stn['data'][0],dtype=decoder.get_dtype(stn['stnid']))
-        #print decoder.get_fixed_vars(stn['stnid'])
+
+decoder = MapDecoder()

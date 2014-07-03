@@ -4,7 +4,13 @@ import traceback
 from numpy import array
 
 class Decoder(object):
-    def __init__(self, vars=False, inherit=False, fixed_vars={}):
+    vars = False
+    fixed_vars = False
+    inherit = False
+    state = {'identifier':False,
+            'index':False,
+            } # some unique identifier for the current state of the return
+    def __init__(self, vars=False, inherit=False, fixed_vars=False):
         """
         create a MessageDecoder object, which has methods for opening, and looping
         through files. The _line_read method and the _chunk_read methods
@@ -25,12 +31,28 @@ class Decoder(object):
             self.vars = inherit.vars
             self.fixed_vars = inherit.fixed_vars
             #inheritance be darned
-        elif vars:
+        if self.inherit:
+            # internally inherit a metadat set
+            self.vars = self.inherit.vars
+            self.fixed_vars = self.inherit.fixed_vars
+        # or, on init, you can further redefine what the variables are.
+        if vars:
             self.vars = vars
+        if fixed_vars:
             self.fixed_vars = fixed_vars
         else:
+            self.fixed_vars = FixedVariableList()
+        # then, at the end, if vars still has not been set, then we sortof fail.
+        # though this sadly still initialized the object.
+        if self.vars is False:
+            # they never defined vars anywhere, so, fail
             print "Fool, you need to pass variable information to this!"
             return None
+    def varpos(self, varname):
+        """
+        return the index of the variable with the name varname
+        """
+        return self.vars.get_index(varname)
     def getvars(self, stnid=False):
         if stnid and type(self.vars) == dict:
             return self.vars[stnid].getvars()
@@ -55,11 +77,11 @@ class FileDecoder(Decoder):
         """
         if generator:
             # offload directly to the generator
-            return self.decode_proc(filepath, limit, kwargs)
+            return self.decode_proc(filepath, limit, **kwargs)
         else:
             # accumulate the data, since decode_proc is always a generator!
             data = []
-            for d in self.decode_proc(filepath, limit, kwargs):
+            for d in self.decode_proc(filepath, limit, **kwargs):
                 data+=d
             return d
     def _line_read(self, gfhandle):
@@ -225,6 +247,7 @@ class VariableList(object):
         self.units      = []
         self.mins       = []
         self.maxs       = []
+        self.indices    = {}
     
     def addvar(self, name, longname, dtype, shape, unit, index=None, scale=1, offset=0, mn=0, mx=1):
         """
@@ -262,6 +285,7 @@ class VariableList(object):
         self.units.append(unit)
         self.mins.append(mn)
         self.maxs.append(mx)
+        self.indices[name] = len(self.varnames)-1
         
     def _overwrite(self, index, name, longname, dtype, shape,
                    unit, scale, offset, mn, mx):
@@ -277,6 +301,7 @@ class VariableList(object):
         self.units[index] = unit
         self.mins[index] = mn
         self.maxs[index] = mx
+        self.indiecs[name] = index
     
     def __add__(self, additional):
         """
@@ -292,6 +317,8 @@ class VariableList(object):
         new.units = self.units + additional.units
         new.mins = self.mins + additional.mins
         new.maxs = self.maxs + additional.maxs
+        for k in range(len(new.varnames)):
+            new.indices[new.varnames[k]] = k
         return new
     
     def __repr__(self):
@@ -339,7 +366,17 @@ class VariableList(object):
         for i in range(len(self.varnames)):
             data.append(self.getvar_by_id(i))
         return data
-        
+    
+    def get_index(self, varname):
+        """
+        return the index of the variable with the name 'varname'
+        """
+        if varname in self.indices:
+            return self.indices[varname]
+        else:
+            raise ValueError('Variable {} not found'.format(varname))
+            
+    
     def tables_desc(self, ):
         """
         This utility will produce the numpy recarray dtype entry
@@ -382,8 +419,7 @@ class FixedVariableList(object):
                 'data':self.data[i]
                 })
         return data
-    
-    
+
 
     
 

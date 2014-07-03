@@ -2,20 +2,24 @@
 STI sodars, which are currently all in SOCAL, and operate on local time as best
 I can tell..
 """
-from decoders.core import FileDecoder
+from decoders.core import FileDecoder, VariableList
 import decoders.messages.sodarmsg1 as sd
 import time
 import os
 import datetime as dt
 
-
-
 os.environ['TZ']='America/Los_Angeles'
 time.tzset()
 
-
-class STISdr(FileDecoder):
+class SodarGrid1(FileDecoder):
     #code
+    vars = VariableList()
+    vars.addvar('DATTIM','Observation time','int',1,'Seconds since 1970 1 1 00:00:00 UTC')
+    vars += sd.decoder.vars # and add the vars from the message decoder
+    vars.addvar('OBSTART','Begging of Ob time bin','int',1,'Seconds since 1970 1 1 00:00:00 UTC')
+    vars.addvar('OBEND','End of ob time bin','int',1,'Seconds since 1970 1 1 00:00:00 UTC')
+    fixed_vars = sd.decoder.fixed_vars
+    
     def on_chunk(self, message):
         # grab the time from this message
         l=message.split('\n')
@@ -46,27 +50,8 @@ class STISdr(FileDecoder):
             yield d
             
         fil.close()
-        
 
-V=sd.decoder.vars
-V.addvar('OBSTART','int',1,'Seconds since 1970 1 1 00:00:00 UTC')
-V.addvar('OBEND','int',1,'Seconds since 1970 1 1 00:00:00 UTC')
-
-decoder = STISdr(vars=V,fixed_vars=sd.decoder.fixed_vars)
+decoder = SodarGrid1()
     
 if __name__ == "__main__":
-    from calendar import timegm
-    import numpy as np
-    #for ob in decoder.decode('/data/ASN/RAW/IRVS_201403/888250737bc5fd4b6387a6abeef4dcd3.dat.gz'):
-    for ob in decoder.decode('/data/ASN/RAW/IRVS_201403/534703e104603156710af77c44225415.dat.gz'):
-        print len(ob)
-        t = np.array(zip(*ob)[0])
-        s=dt.datetime.utcfromtimestamp(ob[0][0])
-        e=dt.datetime.utcfromtimestamp(ob[-1][0])
-        while s.date() <= e.date():
-            print s.date(),s
-            day_start = timegm(s.date().timetuple())
-            day_end = day_start + 86400
-            print day_start,day_end
-            print len(np.arange(t.shape[0])[(t>=day_start)&(t<day_end)].tolist())
-            s+= dt.timedelta(days=1)
+    pass

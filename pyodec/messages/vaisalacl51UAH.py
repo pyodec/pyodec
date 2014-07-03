@@ -41,7 +41,7 @@ class VCl51UAHD(MessageDecoder):
         return obset
         
 V=VariableList()
-V..addvar('DATTIM','seconds since 1970-01-01 00:00 UTC',int,1,'S') 
+V.addvar('DATTIM','seconds since 1970-01-01 00:00 UTC',int,1,'S') 
 V.addvar('CLDSTATUS',str,50,'')
 V.addvar('INSSTATUS',str,50,'')
 V.addvar('BS','int32',(1540,),'W?')

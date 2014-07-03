@@ -7,6 +7,37 @@ from datetime import datetime as dt
 from calendar import timegm
 
 class ASCSdrD(FileDecoder):
+    # variables
+    fixed_vars = FixedVariableList()
+    fixed_vars.addvar('HEIGHT','m AGL','int',np.arange(25)*10+10)
+    vars = VariableList()
+    vars.addvar('DATTIM',   'seconds since 1970-01-01 00:00 UTC',int,1,'S')
+    vars.addvar('STNAME',   'Station Name',str,20,'')
+    vars.addvar('WSPD',     'Wind speed','float32',(25,),'m/s')
+    vars.addvar('WDIR',     'Wind direction','float32',(25,),'deg')
+    vars.addvar('WVERT',    'Vertical wind speed','float32',(25,),'m/s')
+    vars.addvar('UINT',     'U-beam intensity','float32',(25,),'mv')
+    vars.addvar('VINT',     'V-beam intensity','float32',(25,),'mv')
+    vars.addvar('WINT',     'W-beam intensity','float32',(25,),'mv')
+    vars.addvar('SNRU',     'U-beam SNR','float32',(25,),'')
+    vars.addvar('SNRV',     'V-beam SNR','float32',(25,),'')
+    vars.addvar('SNRW',     'W-beam SNR','float32',(25,),'')
+    vars.addvar('SDS',      '','float32',(25,),'')
+    vars.addvar('SDW',      '','float32',(25,),'')
+    vars.addvar('GUST',     'Wind gust speed','float32',(25,),'m/s')
+    vars.addvar('TMPC',     'Air Temperature C','float32',1,'C')
+    vars.addvar('BATV',     'Battery Voltage','float32',1,'V')
+    vars.addvar('ANTSTAT',  'Anteanna Status',str,5,'')
+    vars.addvar('HEAT',     'Heater Status',str,5,'')
+    vars.addvar('GEN',      'Generator Status',str,5,'')
+    vars.addvar('FUEL',     'Fuel Status',str,5,'')
+    vars.addvar('RAIN',     'Precipitation Detector','float32',1,'')
+    vars.addvar('SNOW',     'Snow Detector','float32',1,'')
+    vars.addvar('RH',       'Relative Humidity','float32',1,'%')
+    vars.addvar('PRES',     'Surface Pressure','float32',1,'hPa')
+    vars.addvar('DEWP',     'Dew point temperature','float32',1,'C')
+    
+    # instance variables
     i=0
     select_keys=[]
     def on_line(self, line):
@@ -76,36 +107,7 @@ class ASCSdrD(FileDecoder):
         gzfh.close()
 
 
-# define the dtypes of the variables we produce here (in the correct order!)
-V = VariableList()
-V.addvar('DATTIM','seconds since 1970-01-01 00:00 UTC',int,1,'S')
-V.addvar('STNAME','Station Name',str,20,'')
-V.addvar('WSPD','Wind speed','float32',(25,),'m/s')
-V.addvar('WDIR','Wind gust','float32',(25,),'deg')
-V.addvar('WVERT','','float32',(25,),'m/s')
-V.addvar('UINT','','float32',(25,),'mv')
-V.addvar('VINT','','float32',(25,),'mv')
-V.addvar('WINT','','float32',(25,),'mv')
-V.addvar('SNRU','','float32',(25,),'')
-V.addvar('SNRV','','float32',(25,),'')
-V.addvar('SNRW','','float32',(25,),'')
-V.addvar('SDS','','float32',(25,),'')
-V.addvar('SDW','','float32',(25,),'')
-V.addvar('GUST','','float32',(25,),'m/s')
-V.addvar('TMPC','','float32',1,'C')
-V.addvar('BATV','','float32',1,'V')
-V.addvar('ANTSTAT','',str,5,'')
-V.addvar('HEAT','',str,5,'')
-V.addvar('GEN','',str,5,'')
-V.addvar('FUEL','',str,5,'')
-V.addvar('RAIN','','float32',1,'')
-V.addvar('SNOW','','float32',1,'')
-V.addvar('RH','','float32',1,'%')
-V.addvar('PRES','','float32',1,'hPa')
-V.addvar('DEWP','','float32',1,'C')
-
 # define any fixed variables which would be beneficial to our cause
-FV = FixedVariableList()
-FV.addvar('HEIGHT','m AGL','int',np.arange(25)*10+10)
 
-decoder = ASCSdrD(vars=V, fixed_vars=FV)
+
+decoder = ASCSdrD()

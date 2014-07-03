@@ -10,7 +10,13 @@ from calendar import timegm
 Read CL-31 .DAT files produced by ceilview
 """
 
-class uucl31C(FileDecoder):
+class CVcl31(FileDecoder):
+    #variables
+    vars = VariableList()
+    vars.addvar('DATTIM','seconds since 1970-01-01 00:00 UTC',int,1,'S') 
+    vars += msgdecode.vars
+    fixed_vars = msgdecode.fixed_vars
+    
     chunks = 0
     def on_chunk(self, message):
         # this is an end-spliced message, so we will get the timestamp
@@ -37,12 +43,8 @@ class uucl31C(FileDecoder):
         gzfh = gzip.open(filepath,'r')
         
         for d in self.read_chunks_gen(yieldcount, gzfh, end=unichr(004)):
-            print 'yielding'
             if d:
                 yield d
         gzfh.close()
 
-decoder = uucl31C(inherit=msgdecode)
-dattim_var = VariableList()
-dattim_var.addvar('DATTIM','seconds since 1970-01-01 00:00 UTC',int,1,'S') 
-decoder.vars = dattim_var + decoder.vars
+decoder = CVcl31()
