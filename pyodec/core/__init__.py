@@ -62,6 +62,10 @@ class Decoder(object):
             return self.fixed_vars[stnid].getvars()
         return self.fixed_vars.getvars()
     def get_dtype(self, stnid=False):
+        """
+        Get a numpy-recarray-compliant datatype statement which can be 
+        used to create a recarray from any single observation.
+        """
         if stnid and type(self.vars) == dict:
             return self.vars[stnid].tables_desc()
         return self.vars.tables_desc()
@@ -132,10 +136,6 @@ class FileDecoder(Decoder):
             for line in self._line_read(gfhandle):
                 ob = self.on_line(line)
                 if ob:
-                    if type(ob) == dict:
-                       # this is an update
-                       yield ob
-                       continue
                     # if ob data was retunred for this instance, then save it
                     data.append(ob)
                     if len(data) >= yieldcount:
@@ -160,10 +160,6 @@ class FileDecoder(Decoder):
             for chunk in self._chunk_read(gfhandle, begin, end):
                 ob = self.on_chunk(chunk)
                 if ob:
-                    if type(ob) == dict:
-                       # this is an update
-                       yield ob
-                       continue
                     data.append(ob)
                     if len(data) >= yieldcount:
                         yield data
@@ -179,7 +175,8 @@ class FileDecoder(Decoder):
     
     @classmethod
     def open_ascii(cls, filepath):
-        if not os.path.exists(filepath): return False
+        if not os.path.exists(filepath):
+            raise NameError('File Not Found')
         if os.path.splitext(filepath)[1] == '.gz':
             return gzip.open(filepath,'r')
         else:
@@ -202,23 +199,32 @@ class FileDecoder(Decoder):
         return a tuple from an observation -- defined by the specific decoder.
         return False if the ob should be skipped
         """
-        pass
+        return 'undefined function'
     
     def on_line(self, line):
         """
         return a tuple whose indices correspond to those of varlist.
         return False if the ob should be skipped
         """
-        pass
+        return 'undefined function'
     
     def decode_proc(self, filepath, limit, **kwargs):
         """
         this should be a standardized function - defined by the decoder
         which takes a file path, and opens it, and calls read_lines or read_chunks
         and then returns the data those two functions produce.
-        """
-        pass
 
+        Alternatively, you can not decode it, and use the default. But, it really won't
+        work for most applications. Sorry.
+        """
+        if self.on_chunk('') != 'undefined':
+            func = self.on_chunk
+        else:
+            func = self.on_line
+        with self.open_ascii(filepath) as fil:
+            for data in func(limit, fil, **kwargs):
+                yield data
+ 
 
 class MessageDecoder(Decoder):
     """
