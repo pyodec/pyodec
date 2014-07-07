@@ -46,8 +46,8 @@ class Decoder(object):
         # though this sadly still initialized the object.
         if self.vars is False:
             # they never defined vars anywhere, so, fail
-            print "Fool, you need to pass variable information to this!"
-            return None
+            raise IOError("You need to pass variable information to this!")
+            
     def varpos(self, varname):
         """
         return the index of the variable with the name varname
@@ -382,8 +382,13 @@ class VariableList(object):
         else:
             raise ValueError('Variable {} not found'.format(varname))
             
+    def tables_desc(self):
+        """
+        DEPRECATED: alias for self.dtype()
+        """
+        return self.dtype()
     
-    def tables_desc(self, ):
+    def dtype(self):
         """
         This utility will produce the numpy recarray dtype entry
         for the pytable which will hold the data contained within.
