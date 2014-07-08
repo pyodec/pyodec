@@ -68,3 +68,34 @@ fvars.addvar('HEIGHT','m AGL','int',np.arange(770)*10)
 
 decoder = cl31Dm2(vars=vvars,fixed_vars=fvars) 
 
+
+'''
+decoder for Viasala-BL-view produced .his data files from a CL-31
+
+    read a CL31 HIS file, which is just lines of encoded data,
+    NO status information is provided with this data format.
+'''
+class cl31HisD(MessageDecoder):
+    vars = VariableList()
+    vars.addvar('DATTIM','seconds since 1970-01-01 00:00 UTC',int,1,'S')
+    vars.addvar('BS','Attenuated backscatter coefficient','float32',(480,),'1/(m sr)')
+    fixed_vars = FixedVariableList()
+    fixed_vars.addvar('HEIGHT','m AGL','int',np.arange(770)*10)
+    def decode(self, message):
+        if len(message) < 300:
+            return False
+        line = message.split(',')
+        tm = int(line[1])
+        line = line[-1].strip()
+        data = np.zeros(480,dtype=np.float32)
+        # and grab/decode the data line
+        for i in xrange(0,len(line),5):
+            ven = line[i:i+5]
+            data[i/5] = twos_comp(int(ven,16),20)
+        # set negative values to the minimum value of 1
+        data[data<=0] = 1.
+        # reverse the data! it comes out backwards
+        data = data[::-1]
+        data = np.log10(data) - 10 #??
+        return [tm,data]
+

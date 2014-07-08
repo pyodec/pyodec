@@ -9,7 +9,11 @@ import gzip
 U of Utah CT-12k: epoch times stored *before* the message
 """
 
-class uuct12kD(FileDecoder):
+class Epct12kD(FileDecoder):
+    vars = VariableList()
+    vars.addvar('DATTIM','Observation time',int,1,'Seconds since 1970-01-01 00:00:00 UTC')
+    vars += msgdecode.vars
+    fixed_vars = msgdecode.fixed_vars
     def on_chunk(self, message):
         # this is an end-spliced message, so we will get the timestamp
         ob = message.split(unichr(002))
@@ -25,14 +29,14 @@ class uuct12kD(FileDecoder):
         output = (otime,data[0],data[1])
         return output
     
-    def decode(self, filepath, yieldcount=1000):
+    def decode_proc(self, filepath, yieldcount=1000):
         # open the file
         if not os.path.exists(filepath):
             print "NO SUCH FILE"
             return 
-        gzfh = gzip.open(filepath,'r')
+        gzfh = self.open_ascii(filepath)
         for d in self.read_chunks_gen(yieldcount, gzfh,end=unichr(003)):
             yield d
         gzfh.close()
 
-decoder = uuct12kD(inherit=msgdecode)
+decoder = Epct12kD()

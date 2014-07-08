@@ -9,7 +9,6 @@ def decode(source, decoder, *args, **kwargs):
     """
     print "importing", decoder
     decoder = importlib.import_module("."+decoder,'pyodec.files')
-    
     return decoder.decoder.decode(source, *args, **kwargs)
 
 

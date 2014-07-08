@@ -1,5 +1,5 @@
 from pyodec.core import FileDecoder
-from pyodec.messages.vaisalacl51UAH import decoder as msgdecode
+from pyodec.messages.vaisalacl51 import decoder as msgdecode
 import numpy as np
 import os
 import time
@@ -33,8 +33,3 @@ class UAHcl51D(FileDecoder):
         fil.close()
 
 decoder = UAHcl51D(inherit=msgdecode)
-
-if __name__ == '__main__':
-    # test this on a specific file
-    for dat in decoder.decode('/data/ASN/RAW/UAHCL_201308/cbb858116e19db8e94528e67f7b19626.dat.gz'):
-        print len(dat),min(zip(*dat)[0])

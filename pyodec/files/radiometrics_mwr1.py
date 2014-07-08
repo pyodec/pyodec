@@ -20,6 +20,34 @@ outheight = np.arange(0., 10.0, .05)
 
 
 class RadMWR1D(FileDecoder):
+    vars = VariableList()
+    vars.addvar('DATTIM','Observation Time',int,1,'Seconds since 1970-01-01 00:00:00 UTC')
+    vars.addvar('ZENITH_TEMP','', 'float32', (58,), 'K')
+    vars.addvar('ZENITH_RH', '','float32', (58,), '%')
+    vars.addvar('ZENITH_VAPDEN','', 'float32', (58,), 'g/m^3')
+    vars.addvar('ZENITH_LIQDEN','', 'float32', (58,), 'g/m^3')
+    vars.addvar('ANGLE_N_TEMP','', 'float32', (58,), 'K')
+    vars.addvar('ANGLE_N_RH','', 'float32', (58,), '%')
+    vars.addvar('ANGLE_N_VAPDEN','', 'float32', (58,), 'g/m^3')
+    vars.addvar('ANGLE_N_LIQDEN','', 'float32', (58,), 'g/m^3')
+    vars.addvar('ANGLE_S_TEMP','', 'float32', (58,), 'K')
+    vars.addvar('ANGLE_S_RH','', 'float32', (58,), '%')
+    vars.addvar('ANGLE_S_VAPDEN','', 'float32', (58,), 'g/m^3')
+    vars.addvar('ANGLE_S_LIQDEN','', 'float32', (58,), 'g/m^3')
+    vars.addvar('ANGLE_A_TEMP','', 'float32', (58,), 'K')
+    vars.addvar('ANGLE_A_RH','', 'float32', (58,), '%')
+    vars.addvar('ANGLE_A_VAPDEN','', 'float32', (58,), 'g/m^3')
+    vars.addvar('ANGLE_A_LIQDEN','', 'float32', (58,), 'g/m^3')
+    vars.addvar('TAIR', 'float32','', 1, 'K')
+    vars.addvar('RELH', 'float32','', 1, '%')
+    vars.addvar('PRES', 'float32','', 1, 'hPa')
+    vars.addvar('TIR', 'float32','', 1, 'K')
+    vars.addvar('RAIN', 'float32','', 1, 'bin')
+    vars.addvar('INTVAP', 'float32','', 1, 'cm')
+    vars.addvar('INTLIQ', 'float32','', 1, 'mm')
+    vars.addvar('CLDBASE', 'float32','', 1, 'km')
+    fixed_vars = FixedVariableList()
+    fixed_vars.addvar('HEIGHT', 'm AGL', int, np.array(heights) * 1000)  # outheight*1000)
     # code
     ob_persist = [0] * 25
     def on_line(self, dat):
@@ -60,12 +88,12 @@ class RadMWR1D(FileDecoder):
                 # then there were not enough satellites for us to trust this fix
                 return False
             # here we do the testing, did hte location change much?
-            if self.meta:
-                if abs(self.meta[0] - float(l[4]) / 100) > .01  or abs(self.meta[1] - float(l[5]) / 100) > .01:
+            if "location" in self.state.keys():
+                if abs(self.state['location'][0] - float(l[4]) / 100) > .01  or abs(self.state['location'][1] - float(l[5]) / 100) > .01:
                     # then something chaged!
                     tm = calendar.timegm(time.strptime(l[1], '%m/%d/%y %H:%M:%S'))
                     # reset the meta variable, so we don't call this too many times
-                    self.meta = [float(l[4]) / 100, float(l[5]) / 100]
+                    self.state['location'] = [float(l[4]) / 100, float(l[5]) / 100]
                     return self.yield_update(['LOC', tm, float(l[4]) / 100, float(l[5]) / 100, float(l[10])])
         elif k < 401:
             # this is a variable of something other than the core vars -IGNORING
@@ -104,16 +132,13 @@ class RadMWR1D(FileDecoder):
             self.ob_persist[rowkey] = l[4:-1]  # dat(outheight)
             # grab the time with 401/zenith, and that is how it is going to happen.
 
-
-    def decode(self, filepath, yieldcount=1000, location=False):
+    def decode_proc(self, filepath, yieldcount=1000, location=False):
         # open the file
         self.ob_persist = [0] * 24
         self.meta = False
         if location:
             # they want to be updated if the location changes
-            self._throw_updates = True
-
-            self.meta = location
+            self.state['location'] = location
         fh = self.open_ascii(filepath)
         if not fh:
             print "NO SUCH FILE", filepath
@@ -124,49 +149,6 @@ class RadMWR1D(FileDecoder):
 
         fh.close()
 
+decoder = RadMWR1D(fixed_vars=FV)
 
-V = VariableList()
-V.addvar('ZENITH_TEMP', 'float32', (58,), 'K')
-V.addvar('ZENITH_RH', 'float32', (58,), '%')
-V.addvar('ZENITH_VAPDEN', 'float32', (58,), 'g/m^3')
-V.addvar('ZENITH_LIQDEN', 'float32', (58,), 'g/m^3')
-V.addvar('ANGLE_N_TEMP', 'float32', (58,), 'K')
-V.addvar('ANGLE_N_RH', 'float32', (58,), '%')
-V.addvar('ANGLE_N_VAPDEN', 'float32', (58,), 'g/m^3')
-V.addvar('ANGLE_N_LIQDEN', 'float32', (58,), 'g/m^3')
-V.addvar('ANGLE_S_TEMP', 'float32', (58,), 'K')
-V.addvar('ANGLE_S_RH', 'float32', (58,), '%')
-V.addvar('ANGLE_S_VAPDEN', 'float32', (58,), 'g/m^3')
-V.addvar('ANGLE_S_LIQDEN', 'float32', (58,), 'g/m^3')
-V.addvar('ANGLE_A_TEMP', 'float32', (58,), 'K')
-V.addvar('ANGLE_A_RH', 'float32', (58,), '%')
-V.addvar('ANGLE_A_VAPDEN', 'float32', (58,), 'g/m^3')
-V.addvar('ANGLE_A_LIQDEN', 'float32', (58,), 'g/m^3')
-V.addvar('TAIR', 'float32', 1, 'K')
-V.addvar('RELH', 'float32', 1, '%')
-V.addvar('PRES', 'float32', 1, 'hPa')
-V.addvar('TIR', 'float32', 1, 'K')
-V.addvar('RAIN', 'float32', 1, 'bin')
-V.addvar('INTVAP', 'float32', 1, 'cm')
-V.addvar('INTLIQ', 'float32', 1, 'mm')
-V.addvar('CLDBASE', 'float32', 1, 'km')
-
-
-FV = FixedVariableList()
-FV.addvar('HEIGHT', 'm AGL', int, np.array(heights) * 1000)  # outheight*1000)
-
-decoder = RadMWR1D(vars=V, fixed_vars=FV)
-
-if __name__ == '__main__':
-    # run this on a test file
-    for ob in decoder.decode('/data/ASN/RAW/DEQMR_201312/fc0ac2274c30d77094383ebe4101c1d0.dat.gz'):
-    # for ob in decoder.decode('/data/ASN/RAW/LAXR_201402/a61bf695e0b6d4b92e9a78e0fe54f7f7.dat.gz'):
-        if type(ob) == dict:
-            print ob
-            continue
-        print 'data', len(ob)
-        print ob[0][19]
-        # print zip(*ob)[15]
-        print decoder.getvars()[19]
-        print decoder.get_fixed_vars()
 
