@@ -60,12 +60,12 @@ class RadMWR1D(FileDecoder):
                 # then there were not enough satellites for us to trust this fix
                 return False
             # here we do the testing, did hte location change much?
-            if self.meta:
-                if abs(self.meta[0] - float(l[4]) / 100) > .01  or abs(self.meta[1] - float(l[5]) / 100) > .01:
+            if "location" in self.state.keys():
+                if abs(self.state['location'][0] - float(l[4]) / 100) > .01  or abs(self.state['location'][1] - float(l[5]) / 100) > .01:
                     # then something chaged!
                     tm = calendar.timegm(time.strptime(l[1], '%m/%d/%y %H:%M:%S'))
                     # reset the meta variable, so we don't call this too many times
-                    self.meta = [float(l[4]) / 100, float(l[5]) / 100]
+                    self.state['location'] = [float(l[4]) / 100, float(l[5]) / 100]
                     return self.yield_update(['LOC', tm, float(l[4]) / 100, float(l[5]) / 100, float(l[10])])
         elif k < 401:
             # this is a variable of something other than the core vars -IGNORING
@@ -105,15 +105,13 @@ class RadMWR1D(FileDecoder):
             # grab the time with 401/zenith, and that is how it is going to happen.
 
 
-    def decode(self, filepath, yieldcount=1000, location=False):
+    def decode_proc(self, filepath, yieldcount=1000, location=False):
         # open the file
         self.ob_persist = [0] * 24
         self.meta = False
         if location:
             # they want to be updated if the location changes
-            self._throw_updates = True
-
-            self.meta = location
+            self.state['location'] = location
         fh = self.open_ascii(filepath)
         if not fh:
             print "NO SUCH FILE", filepath
