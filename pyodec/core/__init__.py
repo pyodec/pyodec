@@ -207,7 +207,24 @@ class FileDecoder(Decoder):
         return False if the ob should be skipped
         """
         return 'undefined function'
-    
+    def decode_chunks(self, filepath, limit, begin=None, end=None):
+        """
+        A "precompiled" generator-based decoder, to allow you to skip
+        having to write the standard lines.
+        """
+        if os.path.exists(filepath):
+            with self.open_ascii(filepath) as fil:
+                for data in self.read_chunks(limit, filehandle, end=end, begin=begin):
+                    yield data
+    def decode_lines(self, filepath, limit):
+        """
+        A precompiled generator-based decoder allowing line-decoding without having
+        to write the standard modules - if the default options are all that are needed.
+        """
+        if os.path.exists(filepath):
+            with self.open_ascii(filepath) as fil:
+                for data in self.read_lines(limit, filehandle):
+                    yield data
     def decode_proc(self, filepath, limit, **kwargs):
         """
         this should be a standardized function - defined by the decoder
