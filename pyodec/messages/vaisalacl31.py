@@ -3,6 +3,13 @@ import numpy as np
 
 
 class cl31Dm2(MessageDecoder):
+    vars = VariableList()
+    vars.addvar('BS','Attenuated Backscatter coefficient','float32',(770,),'1/(m sr)')
+    vars.addvar('STATUS','CL-31 Status information','float32',(13,),'Null')
+
+    # for now we are going to assume height is fixed, and return it as such
+    fixed_vars = FixedVariableList()
+    fixed_vars.addvar('HEIGHT','m AGL','int',np.arange(770)*10)
     def decode(self, message):
         OB_LENGTH = 770  # FIXME - the current return length is limited to 770
         SCALING_FACTOR = 1.0e9
@@ -17,7 +24,7 @@ class cl31Dm2(MessageDecoder):
         data = ob.split("\n")  # split into lines
     
         #the last line of the profile should be the data line'
-        prof = data[-1].strip()
+        prof = list(data[-1].strip()) # list of the characters
         #grab status lines'
         sl1 = data[0].strip()
         sl2 = data[-2].strip()  # I will skip any intermediate data lines...
@@ -47,26 +54,7 @@ class cl31Dm2(MessageDecoder):
         out = (np.log10(values[:OB_LENGTH] / SCALING_FACTOR),status)
         return out
 
-# I thanks Travc at stack overflow for this method of converting values
-# See here: http://stackoverflow.com/questions/1604464/twos-complement-in-python
-def twos_comp(val, bits):
-    """compute the 2's compliment of int value val"""
-    if((val & (1 << (bits - 1))) != 0):
-        val = val - (1 << bits)
-    return val
-
-
-# set decoder parameters for this type of message.
-
-vvars = VariableList()
-vvars.addvar('BS','Attenuated Backscatter coefficient','float32',(770,),'1/(m sr)')
-vvars.addvar('STATUS','CL-31 Status information','float32',(13,),'Null')
-
-# for now we are going to assume height is fixed, and return it as such
-fvars = FixedVariableList()
-fvars.addvar('HEIGHT','m AGL','int',np.arange(770)*10)
-
-decoder = cl31Dm2(vars=vvars,fixed_vars=fvars) 
+decoder = cl31Dm2() 
 
 
 '''
@@ -99,3 +87,11 @@ class cl31HisD(MessageDecoder):
         data = np.log10(data) - 10 #??
         return [tm,data]
 
+
+# I thank Travc at stack overflow for this method of converting values
+# See here: http://stackoverflow.com/questions/1604464/twos-complement-in-python
+def twos_comp(val, bits):
+    """compute the 2's compliment of int value val"""
+    if((val & (1 << (bits - 1))) != 0):
+        val = val - (1 << bits)
+    return val

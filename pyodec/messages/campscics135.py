@@ -68,7 +68,7 @@ class cs135Dm6(MessageDecoder):
         # unused currently checksum = p2[1].strip()
         data = ob.split("\n")  # split into lines
         # the final line is the profile line
-        prof = data[-1].strip()
+        prof = list(data[-1].strip())
         #grab status lines
         sl1 = data[0].strip().replace("/",'0').split()
         sl2 = data[1].strip().replace("/",'0').split()

@@ -1,7 +1,7 @@
 from pyodec.core import MessageDecoder, VariableList, FixedVariableList
 import numpy as np
 '''
-DEPRECATED
+DEPRECATED - THIS HAS BEEN MOVED INTO THE GENERIC CL-31 decoders!
 
 decoder for Viasala-BL-view produced .his data files from a CL-31
 '''

@@ -5,7 +5,7 @@ import os
 import time
 import calendar
 
-# its just easier to specify the heights manually
+# its just easier to specify the heights manually - they expand on an funky pattern
 heights = [  0.  , 0.05, 0.1 , 0.15, 0.2 , 0.25, 0.3 , 0.35,
          0.4 , 0.45, 0.5 , 0.6 , 0.7 , 0.8 , 0.9 , 1.  ,
          1.1 , 1.2 , 1.3 , 1.4 , 1.5 , 1.6 , 1.7 , 1.8 ,
@@ -149,6 +149,6 @@ class RadMWR1D(FileDecoder):
 
         fh.close()
 
-decoder = RadMWR1D(fixed_vars=FV)
+decoder = RadMWR1D()
 
 
