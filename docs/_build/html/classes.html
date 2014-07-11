@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Pyodec 0.0 documentation" href="index.html" />
-    <link rel="prev" title="Welcome to Pyodec’s documentation!" href="index.html" /> 
+    <link rel="prev" title="Pyodec module methods" href="root.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,7 +37,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Welcome to Pyodec’s documentation!"
+          <a href="root.html" title="Pyodec module methods"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">Pyodec 0.0 documentation</a> &raquo;</li> 
       </ul>
@@ -50,6 +50,27 @@
             
   <div class="section" id="module-pyodec.core">
 <span id="pyodec-core-classes"></span><h1>Pyodec core classes<a class="headerlink" href="#module-pyodec.core" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pyodec.core.Decoder">
+<em class="property">class </em><tt class="descclassname">pyodec.core.</tt><tt class="descname">Decoder</tt><big>(</big><em>vars=False</em>, <em>inherit=False</em>, <em>fixed_vars=False</em><big>)</big><a class="headerlink" href="#pyodec.core.Decoder" title="Permalink to this definition">¶</a></dt>
+<dd><div class="highlight-python"><div class="highlight"><pre> <span class="n">Decode</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="pyodec.core.Decoder.get_dtype">
+<tt class="descname">get_dtype</tt><big>(</big><em>stnid=False</em><big>)</big><a class="headerlink" href="#pyodec.core.Decoder.get_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a numpy-recarray-compliant datatype statement which can be 
+used to create a recarray from any single observation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyodec.core.Decoder.varpos">
+<tt class="descname">varpos</tt><big>(</big><em>varname</em><big>)</big><a class="headerlink" href="#pyodec.core.Decoder.varpos" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the index of the variable with the name varname</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="class">
 <dt id="pyodec.core.FileDecoder">
 <em class="property">class </em><tt class="descclassname">pyodec.core.</tt><tt class="descname">FileDecoder</tt><big>(</big><em>vars=False</em>, <em>inherit=False</em>, <em>fixed_vars=False</em><big>)</big><a class="headerlink" href="#pyodec.core.FileDecoder" title="Permalink to this definition">¶</a></dt>
@@ -183,8 +204,8 @@ np.array([],dtype=decoder.tables_desc())</p>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="index.html"
-                        title="previous chapter">Welcome to Pyodec&#8217;s documentation!</a></p>
+  <p class="topless"><a href="root.html"
+                        title="previous chapter">Pyodec module methods</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/classes.txt"
@@ -217,7 +238,7 @@ np.array([],dtype=decoder.tables_desc())</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Welcome to Pyodec’s documentation!"
+          <a href="root.html" title="Pyodec module methods"
              >previous</a> |</li>
         <li><a href="index.html">Pyodec 0.0 documentation</a> &raquo;</li> 
       </ul>

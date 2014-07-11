@@ -1,0 +1,22 @@
+\indexentry{pyodec (module)|hyperpage}{5}
+\indexentry{decode() (in module pyodec)|hyperpage}{5}
+\indexentry{detect() (in module pyodec)|hyperpage}{5}
+\indexentry{pyodec.core (module)|hyperpage}{7}
+\indexentry{FileDecoder (class in pyodec.core)|hyperpage}{7}
+\indexentry{decode() (pyodec.core.FileDecoder method)|hyperpage}{7}
+\indexentry{decode\_chunks() (pyodec.core.FileDecoder method)|hyperpage}{7}
+\indexentry{decode\_lines() (pyodec.core.FileDecoder method)|hyperpage}{7}
+\indexentry{decode\_proc() (pyodec.core.FileDecoder method)|hyperpage}{7}
+\indexentry{on\_chunk() (pyodec.core.FileDecoder method)|hyperpage}{7}
+\indexentry{on\_line() (pyodec.core.FileDecoder method)|hyperpage}{7}
+\indexentry{read\_chunks() (pyodec.core.FileDecoder method)|hyperpage}{7}
+\indexentry{read\_lines() (pyodec.core.FileDecoder method)|hyperpage}{7}
+\indexentry{yield\_update() (pyodec.core.FileDecoder method)|hyperpage}{7}
+\indexentry{FixedVariableList (class in pyodec.core)|hyperpage}{7}
+\indexentry{MessageDecoder (class in pyodec.core)|hyperpage}{7}
+\indexentry{decode() (pyodec.core.MessageDecoder method)|hyperpage}{7}
+\indexentry{VariableList (class in pyodec.core)|hyperpage}{7}
+\indexentry{addvar() (pyodec.core.VariableList method)|hyperpage}{8}
+\indexentry{dtype() (pyodec.core.VariableList method)|hyperpage}{8}
+\indexentry{get\_index() (pyodec.core.VariableList method)|hyperpage}{8}
+\indexentry{tables\_desc() (pyodec.core.VariableList method)|hyperpage}{8}
