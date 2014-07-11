@@ -4,6 +4,20 @@ import traceback
 from numpy import array
 
 class Decoder(object):
+    """
+    The root decoer object, primarily controls and standardizes interaction
+    between 
+
+.. code-block:: python
+   :emphasize-lines: 3,5
+
+   def some_function():
+       interesting = False
+       print 'This line is highlighted.'
+       print 'This one is not...'
+       print '...but this one is.'
+
+    """
     vars = False
     fixed_vars = False
     inherit = False
@@ -88,7 +102,7 @@ class FileDecoder(Decoder):
             for d in self.decode_proc(filepath, limit, **kwargs):
                 data+=d
             return d
-    def _line_read(self, gfhandle):
+    def __line_read(self, gfhandle):
         """
         This method lets you define the behavior for reading every line
         """
@@ -96,7 +110,7 @@ class FileDecoder(Decoder):
             if line[:2] == '::': continue
             yield line
             
-    def _chunk_read(self, gfhandle, begin=False, end=False):
+    def __chunk_read(self, gfhandle, begin=False, end=False):
         """
         this method lets you define the behavior for reading the file by chunks
         (which actually simply redefines the _line_read for chunking)
@@ -133,12 +147,13 @@ class FileDecoder(Decoder):
         """
         data = []
         try:
-            for line in self._line_read(gfhandle):
+            for line in self.__line_read(gfhandle):
                 ob = self.on_line(line)
                 if ob:
                     # if ob data was retunred for this instance, then save it
                     data.append(ob)
                     if len(data) >= yieldcount:
+                        #yield np.rec.fromrecords(data,dtype=self.get_dtype())
                         yield data
                         data = []
         except KeyboardInterrupt:
@@ -148,6 +163,7 @@ class FileDecoder(Decoder):
             traceback.print_exc()
             return
         # yield remaining obs
+        #yield np.rec.fromrecords(data,dtype=self.get_dtype())
         yield data
 
     
@@ -157,11 +173,15 @@ class FileDecoder(Decoder):
         """
         data = []
         try:
-            for chunk in self._chunk_read(gfhandle, begin, end):
-                ob = self.on_chunk(chunk)
+            for chunk in self.__chunk_read(gfhandle, begin, end):
+                try:
+                    ob = self.on_chunk(chunk)
+                except:
+                    traceback.print_exc()
                 if ob:
                     data.append(ob)
                     if len(data) >= yieldcount:
+                        #yield np.rec.fromrecords(data,dtype=self.get_dtype())
                         yield data
                         data = []
         except KeyboardInterrupt:
@@ -171,6 +191,7 @@ class FileDecoder(Decoder):
             traceback.print_exc()
             return
         # yield remaining obs
+        # yield np.rec.fromrecords(data,dtype=self.get_dtype())
         yield data
     
     @classmethod
@@ -211,6 +232,13 @@ class FileDecoder(Decoder):
         """
         A "precompiled" generator-based decoder, to allow you to skip
         having to write the standard lines.
+        
+        .. code-block:: python
+
+            class MyDecoder(FileDecoder):
+                ...
+                def decode_proc(self, *args, *kwargs):
+                    return self.decode_chunks(*args, **kwargs)
         """
         if os.path.exists(filepath):
             with self.open_ascii(filepath) as fil:
@@ -220,6 +248,13 @@ class FileDecoder(Decoder):
         """
         A precompiled generator-based decoder allowing line-decoding without having
         to write the standard modules - if the default options are all that are needed.
+        
+        .. code-block:: python
+
+            class MyDecoder(FileDecoder):
+                ...
+                def decode_proc(self, *args, *kwargs):
+                    return self.decode_lines(*args, **kwargs)
         """
         if os.path.exists(filepath):
             with self.open_ascii(filepath) as fil:
@@ -401,7 +436,8 @@ class VariableList(object):
             
     def tables_desc(self):
         """
-        DEPRECATED: alias for self.dtype()
+.. deprecated:: 0.0
+    Use :func:`dtype()` instead.
         """
         return self.dtype()
     

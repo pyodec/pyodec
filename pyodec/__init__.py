@@ -16,7 +16,16 @@ def decode(source, decoder, *args, **kwargs):
 
 def detect(source):
     """
+    **Currently non-functional**
+    
     run every decoder we have on some amount of the source file, 
     and return every decoder identifier which successfully read data from the chunk.
     """
     pass
+
+def download(decoder):
+    """
+    **NON FUNCTIONAL**
+    
+    Download a decoder and install it on the local ``Pyodec`` installation
+    """
