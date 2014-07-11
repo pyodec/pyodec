@@ -12,8 +12,10 @@ Contents:
    :maxdepth: 2
    
    intro
-   root
-   classes
+   rules/index
+   lib/index
+   head
+   core
 
 
 

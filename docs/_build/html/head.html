@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Welcome to Pyodec’s documentation! &mdash; Pyodec 0.0 documentation</title>
+    <title>Pyodec Head Methods &mdash; Pyodec 0.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -23,8 +23,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Pyodec 0.0 documentation" href="#" />
-    <link rel="next" title="Pyodec Introduction" href="intro.html" /> 
+    <link rel="top" title="Pyodec 0.0 documentation" href="index.html" />
+    <link rel="next" title="Core Classes" href="core.html" />
+    <link rel="prev" title="Pyodec deoder rules" href="rules/index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,9 +38,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="intro.html" title="Pyodec Introduction"
+          <a href="core.html" title="Core Classes"
              accesskey="N">next</a> |</li>
-        <li><a href="#">Pyodec 0.0 documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="rules/index.html" title="Pyodec deoder rules"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Pyodec 0.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -48,26 +52,31 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="welcome-to-pyodec-s-documentation">
-<h1>Welcome to Pyodec&#8217;s documentation!<a class="headerlink" href="#welcome-to-pyodec-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Contents:</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Pyodec Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rules/index.html">Rulse for writing and using decoders</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib/index.html">Main Library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="head.html">Pyodec Head Methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="core.html">Core Classes</a></li>
-</ul>
-</div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
-<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
-<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
-</ul>
+  <div class="section" id="pyodec-head-methods">
+<h1>Pyodec Head Methods<a class="headerlink" href="#pyodec-head-methods" title="Permalink to this headline">¶</a></h1>
+<p>Two methods are available at the root of the pyodec package. Only one of them is acutally functional.</p>
+<span class="target" id="module-pyodec"></span><p>Pyodec root functionality</p>
+<dl class="function">
+<dt id="pyodec.decode">
+<tt class="descclassname">pyodec.</tt><tt class="descname">decode</tt><big>(</big><em>source</em>, <em>decoder</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pyodec.decode" title="Permalink to this definition">¶</a></dt>
+<dd><p>import and execute a file or string decoder on a certain class</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyodec.detect">
+<tt class="descclassname">pyodec.</tt><tt class="descname">detect</tt><big>(</big><em>source</em><big>)</big><a class="headerlink" href="#pyodec.detect" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Currently non-functional</strong></p>
+<p>run every decoder we have on some amount of the source file, 
+and return every decoder identifier which successfully read data from the chunk.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyodec.download">
+<tt class="descclassname">pyodec.</tt><tt class="descname">download</tt><big>(</big><em>decoder</em><big>)</big><a class="headerlink" href="#pyodec.download" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>NON FUNCTIONAL</strong></p>
+<p>Download a decoder and install it on the local <tt class="docutils literal"><span class="pre">Pyodec</span></tt> installation</p>
+</dd></dl>
+
 </div>
 
 
@@ -76,18 +85,15 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="#">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Welcome to Pyodec&#8217;s documentation!</a></li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
-</ul>
-
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="rules/index.html"
+                        title="previous chapter">Pyodec deoder rules</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="intro.html"
-                        title="next chapter">Pyodec Introduction</a></p>
+  <p class="topless"><a href="core.html"
+                        title="next chapter">Core Classes</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="_sources/index.txt"
+    <li><a href="_sources/head.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -117,9 +123,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="intro.html" title="Pyodec Introduction"
+          <a href="core.html" title="Core Classes"
              >next</a> |</li>
-        <li><a href="#">Pyodec 0.0 documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="rules/index.html" title="Pyodec deoder rules"
+             >previous</a> |</li>
+        <li><a href="index.html">Pyodec 0.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
