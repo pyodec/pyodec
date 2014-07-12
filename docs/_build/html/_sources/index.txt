@@ -14,8 +14,6 @@ Contents:
    intro
    rules/index
    lib/index
-   head
-   core
 
 
 

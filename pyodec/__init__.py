@@ -7,7 +7,6 @@ def decode(source, decoder, *args, **kwargs):
     """
     import and execute a file or string decoder on a certain class
     """
-    print "importing", decoder
     decoder = importlib.import_module("."+decoder,'pyodec.files')
     return decoder.decoder.decode(source, *args, **kwargs)
 
@@ -25,7 +24,7 @@ def detect(source):
 
 def download(decoder):
     """
-    **NON FUNCTIONAL**
+    **Currently non-functional**
     
     Download a decoder and install it on the local ``Pyodec`` installation
     """
