@@ -67,13 +67,14 @@
 <p><strong>Decoders should accept file path string, file object, and (where possible) string inputs to the decoder method as the first argument.</strong></p>
 <p>At a minimum, a decoder class should contain a decode method which can be run conforming to these input and interface protocols.</p>
 <p>Decoders should produce a generator object, (usually using yield), and should allow the keyword argument generator control whether a generator or list is returned. generator should default to True.</p>
-<p>Available <tt class="docutils literal"><span class="pre">.decode()</span></tt> keyword arguments</p>
+<div class="section" id="required-decode-keyword-arguments">
+<h3>Required <tt class="docutils literal"><span class="pre">.decode()</span></tt> keyword arguments<a class="headerlink" href="#required-decode-keyword-arguments" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
-<col width="8%" />
-<col width="4%" />
+<col width="11%" />
+<col width="3%" />
 <col width="6%" />
-<col width="82%" />
+<col width="79%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Argument</th>
@@ -83,20 +84,23 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>limit</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">limit</span></tt></td>
 <td>int</td>
 <td>1000</td>
-<td>Number of discrete data results to accumulate before yielding</td>
+<td>Number of discrete data results
+to accumulate before yielding</td>
 </tr>
-<tr class="row-odd"><td>generator</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">generator</span></tt></td>
 <td>bool</td>
 <td>False</td>
-<td>Produce a generator based on limit, or a single set of values representing the entire dataset.</td>
+<td>Produce a generator based on limit,
+or a single set of values representing the entire dataset.</td>
 </tr>
 </tbody>
 </table>
 <p>Warning Not all decoders at this time implement this protocol, and simply return generators at all times.
 These input requirements will evolve and expand over time (such as a requirement to handle certain keyword arguments properly)</p>
+</div>
 </div>
 <div class="section" id="data-output-and-returning">
 <h2>Data output and returning<a class="headerlink" href="#data-output-and-returning" title="Permalink to this headline">¶</a></h2>
@@ -111,16 +115,19 @@ These input requirements will evolve and expand over time (such as a requirement
 <div class="highlight-python"><div class="highlight"><pre><span class="k">yield</span> <span class="p">[[[</span><span class="mi">12</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="o">...</span><span class="p">],[[</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span><span class="o">...</span><span class="p">]]</span>
 </pre></div>
 </div>
-<p><em>Note: This allows the returned data to be considered &#8220;records&#8221; as far as numpy is concerned, and can be easily converted into a very powerful recarray type simply with</em></p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rec</span><span class="o">.</span><span class="n">fromrecords</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">decoder</span><span class="o">.</span><span class="n">get_dtype</span><span class="p">())</span>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This allows the returned data to be considered &#8220;records&#8221; as far as numpy is concerned, and can be easily converted into a very powerful recarray type simply with:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rec</span><span class="o">.</span><span class="n">fromrecords</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">decoder</span><span class="o">.</span><span class="n">get_dtype</span><span class="p">())</span>
 </pre></div>
+</div>
 </div>
 <p>Iterative and procedural output are the same structure</p>
 <p>Simply, you interact with a returned list of values in the same manner, whether you receive them from a yield or a return.</p>
-<blockquote>
-<div>top</div></blockquote>
-<p>Variable and data descriptions
-This is the least-defined rule of the library. Many data files are self-describing in some manner, and it is essential to extract this metadata from files.</p>
+</div>
+<div class="section" id="variable-and-data-descriptions">
+<h2>Variable and data descriptions<a class="headerlink" href="#variable-and-data-descriptions" title="Permalink to this headline">¶</a></h2>
+<p>This is the least-defined rule of the library. Many data files are self-describing in some manner, and it is essential to extract this metadata from files.</p>
 <p>The current procedure for a decoder class object to reveal the descriptions of the variables is through three methods with the following functionality.</p>
 <p>Method  Function
 .getvars()       Return a list of dictionaries containing name, dtype and shape info, whose indices correspond to the index of the returned dataset (e.g. column names and descriptions).
@@ -153,8 +160,12 @@ In accordance with python convention, classes will be in CamelCase, and everythi
   <ul>
 <li><a class="reference internal" href="#">Decoder Protocols &amp; Rules</a><ul>
 <li><a class="reference internal" href="#general">General</a></li>
-<li><a class="reference internal" href="#input-client-interfacing">Input &amp; client interfacing</a></li>
+<li><a class="reference internal" href="#input-client-interfacing">Input &amp; client interfacing</a><ul>
+<li><a class="reference internal" href="#required-decode-keyword-arguments">Required <tt class="docutils literal"><span class="pre">.decode()</span></tt> keyword arguments</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#data-output-and-returning">Data output and returning</a></li>
+<li><a class="reference internal" href="#variable-and-data-descriptions">Variable and data descriptions</a></li>
 </ul>
 </li>
 </ul>

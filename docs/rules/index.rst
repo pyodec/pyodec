@@ -1,3 +1,5 @@
+.. highlight:: python
+
 Decoder Protocols & Rules
 ====================================
 
@@ -14,12 +16,12 @@ This is python, so there are no private methods. Rewrite/reallocate any internal
 
 
 General
--------
+#######
 
 A decoder object is a class, which supports methods defined in the sections below relating to variables and a primary decoding function. It is essential that any decoder class supports decoding in the methods described, inputs as described, and handles variables in a very similar manner.
 
 Input & client interfacing
---------------------------
+##########################
 **Decoders should accept file path string, file object, and (where possible) string inputs to the decoder method as the first argument.**
 
 At a minimum, a decoder class should contain a decode method which can be run conforming to these input and interface protocols.
@@ -27,20 +29,23 @@ At a minimum, a decoder class should contain a decode method which can be run co
 Decoders should produce a generator object, (usually using yield), and should allow the keyword argument generator control whether a generator or list is returned. generator should default to True.
 
 
-Available ``.decode()`` keyword arguments
+Required ``.decode()`` keyword arguments
+*****************************************
 
-========= ==== ======= =============================================================================================
-Argument  Type Default Purpose                                                                                        
-========= ==== ======= =============================================================================================
-limit     int  1000    Number of discrete data results to accumulate before yielding                                  
-generator bool False   Produce a generator based on limit, or a single set of values representing the entire dataset. 
-========= ==== ======= =============================================================================================
+============= ==== ======= =============================================================================================
+Argument      Type Default Purpose                                                                                        
+============= ==== ======= =============================================================================================
+``limit``     int  1000    Number of discrete data results
+                           to accumulate before yielding                                  
+``generator`` bool False   Produce a generator based on limit, 
+                           or a single set of values representing the entire dataset. 
+============= ==== ======= =============================================================================================
 
 Warning Not all decoders at this time implement this protocol, and simply return generators at all times.
 These input requirements will evolve and expand over time (such as a requirement to handle certain keyword arguments properly)
 
 Data output and returning
--------------------------
+#########################
 
 The possible range of outputs is far more diverse than the possible inputs, however there are a few goals that can be shared.
 
@@ -59,18 +64,19 @@ not
 
     yield [[[12,12,...],[[4,4,4],[5,5,5],...]]
     
-*Note: This allows the returned data to be considered "records" as far as numpy is concerned, and can be easily converted into a very powerful recarray type simply with*
+.. Note::
+    This allows the returned data to be considered "records" as far as numpy is concerned, and can be easily converted into a very powerful recarray type simply with::
 
-.. code-block:: python
-
-    data = np.rec.fromrecords(data, dtype=decoder.get_dtype())
+        data = np.rec.fromrecords(data, dtype=decoder.get_dtype())
 
 Iterative and procedural output are the same structure
 
 Simply, you interact with a returned list of values in the same manner, whether you receive them from a yield or a return.
 
- top
+
 Variable and data descriptions
+##############################
+
 This is the least-defined rule of the library. Many data files are self-describing in some manner, and it is essential to extract this metadata from files.
 
 The current procedure for a decoder class object to reveal the descriptions of the variables is through three methods with the following functionality.

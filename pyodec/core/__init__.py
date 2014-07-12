@@ -7,13 +7,21 @@ class Decoder(object):
     """
     The root decoer object, primarily controls and standardizes interaction
     between 
-
-
-
     """
-    vars = False
-    fixed_vars = False
-    inherit = False
+    vars = None
+    """
+        Holds the decoder class' ``VariableList`` object. 
+        
+        VariableLists are a **class** attribute, which allows the developer to define the ``vars`` value without rewriting the ``__init__()`` method. Variables should be either a constant for all uses of the decoder, or a variable that changes in the process of decoding. Thus, this may limit the ability to execute multiple decoders in a thread.
+    """
+    fixed_vars = None
+    """
+    the location of the ``FixedVariableList`` object within a ``Decoder``
+    """
+    inherit = None
+    """
+        Predefine another ``Decoder`` descendant to inherit variables from on ``__init__()``
+    """
     state = {'identifier':False,
             'index':False,
             } # some unique identifier for the current state of the return
@@ -29,11 +37,16 @@ class Decoder(object):
         Variable dictionary returns the maximum shape, and name of the
         variables which will be returned by the decoder (per ob, it will
         return an array of these arrays)
+        
+        vars = 5
+        
+        fixed_vars = 10
+        
+        state = dict
         """
         # this attribute indicates if the decoder will produce data for multiple stations
         # if yes, then there is a specific format to use (and a special format for get_dtype)
         # those decoders also have the op
-        self.station_collection=False
         if inherit:
             self.vars = inherit.vars
             self.fixed_vars = inherit.fixed_vars
@@ -141,9 +154,12 @@ class FileDecoder(Decoder):
         if endstr:
             yield endstr
     
-    def read_lines(self, yieldcount, gfhandle):
+    def read_lines(self, limit, gfhandle):
         """
-        Read the file, and yield the # of obs as a generator
+        Handle reading a file line-by-line, throwing each received line in a file (split by ``for line in file:``) to the ``self.on_line`` string decoder.
+        
+        If ``self.on_line`` returns something falsey, then it is skipped, otherwise it is appended to a ``list``, and once the length of that list is equal to that of ``limit``, it is yielded to the decode_proc which called it, and thus to the decoding process.
+        
         """
         data = []
         try:
@@ -152,7 +168,7 @@ class FileDecoder(Decoder):
                 if ob:
                     # if ob data was retunred for this instance, then save it
                     data.append(ob)
-                    if len(data) >= yieldcount:
+                    if len(data) >= limit:
                         #yield np.rec.fromrecords(data,dtype=self.get_dtype())
                         yield data
                         data = []
@@ -314,6 +330,9 @@ class VariableList(object):
     def addvar(self, name, longname, dtype, shape, unit, index=None, scale=1, offset=0, mn=0, mx=1):
         """
         Add a variable to the variable list. 
+        
+        args:
+            name (str): short, space-free name which should be thought of the "column name" 
         """
         if index == None:
             self._append(name,longname,dtype,shape,unit,scale,offset,mn,mx)

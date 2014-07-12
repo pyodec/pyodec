@@ -58,6 +58,12 @@
 <em class="property">class </em><tt class="descclassname">core.</tt><tt class="descname">Decoder</tt><big>(</big><em>vars=False</em>, <em>inherit=False</em>, <em>fixed_vars=False</em><big>)</big><a class="headerlink" href="#core.Decoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>The root decoer object, primarily controls and standardizes interaction
 between</p>
+<dl class="attribute">
+<dt id="core.Decoder.fixed_vars">
+<tt class="descname">fixed_vars</tt><em class="property"> = None</em><a class="headerlink" href="#core.Decoder.fixed_vars" title="Permalink to this definition">¶</a></dt>
+<dd><p>the location of the <tt class="docutils literal"><span class="pre">FixedVariableList</span></tt> object within a <tt class="docutils literal"><span class="pre">Decoder</span></tt></p>
+</dd></dl>
+
 <dl class="method">
 <dt id="core.Decoder.get_dtype">
 <tt class="descname">get_dtype</tt><big>(</big><em>stnid=False</em><big>)</big><a class="headerlink" href="#core.Decoder.get_dtype" title="Permalink to this definition">¶</a></dt>
@@ -79,12 +85,25 @@ used to create a recarray from any single observation.</p>
 <p>alias of <a class="reference internal" href="#core.VariableList.getvars" title="core.VariableList.getvars"><tt class="xref py py-func docutils literal"><span class="pre">VariableList.getvars()</span></tt></a> for the <tt class="docutils literal"><span class="pre">Decoder</span></tt> object&#8217;s contained <tt class="docutils literal"><span class="pre">VariableList</span></tt> object.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="core.Decoder.inherit">
+<tt class="descname">inherit</tt><em class="property"> = None</em><a class="headerlink" href="#core.Decoder.inherit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predefine another <tt class="docutils literal"><span class="pre">Decoder</span></tt> descendant to inherit variables from on <tt class="docutils literal"><span class="pre">__init__()</span></tt></p>
+</dd></dl>
+
 <dl class="method">
 <dt id="core.Decoder.varpos">
 <tt class="descname">varpos</tt><big>(</big><em>varname</em><big>)</big><a class="headerlink" href="#core.Decoder.varpos" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the integer array index of the variable column named <tt class="docutils literal"><span class="pre">varname</span></tt>. This value can be used in conjunction
 with a returned array of data to extract a single known column (if you do not wish to compile the data int a recarray)</p>
 <p>alias of <a class="reference internal" href="#core.VariableList.get_index" title="core.VariableList.get_index"><tt class="xref py py-func docutils literal"><span class="pre">VariableList.get_index()</span></tt></a> for the <tt class="docutils literal"><span class="pre">Decoder</span></tt> object&#8217;s contained <tt class="docutils literal"><span class="pre">VariableList</span></tt> object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="core.Decoder.vars">
+<tt class="descname">vars</tt><em class="property"> = None</em><a class="headerlink" href="#core.Decoder.vars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Holds the decoder class&#8217; <tt class="docutils literal"><span class="pre">VariableList</span></tt> object.</p>
+<p>VariableLists are a <strong>class</strong> attribute, which allows the developer to define the <tt class="docutils literal"><span class="pre">vars</span></tt> value without rewriting the <tt class="docutils literal"><span class="pre">__init__()</span></tt> method. Variables should be either a constant for all uses of the decoder, or a variable that changes in the process of decoding. Thus, this may limit the ability to execute multiple decoders in a thread.</p>
 </dd></dl>
 
 </dd></dl>
@@ -160,8 +179,9 @@ return False if the ob should be skipped</p>
 
 <dl class="method">
 <dt id="core.FileDecoder.read_lines">
-<tt class="descname">read_lines</tt><big>(</big><em>yieldcount</em>, <em>gfhandle</em><big>)</big><a class="headerlink" href="#core.FileDecoder.read_lines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read the file, and yield the # of obs as a generator</p>
+<tt class="descname">read_lines</tt><big>(</big><em>limit</em>, <em>gfhandle</em><big>)</big><a class="headerlink" href="#core.FileDecoder.read_lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle reading a file line-by-line, throwing each received line in a file (split by <tt class="docutils literal"><span class="pre">for</span> <span class="pre">line</span> <span class="pre">in</span> <span class="pre">file:</span></tt>) to the <tt class="docutils literal"><span class="pre">self.on_line</span></tt> string decoder.</p>
+<p>If <tt class="docutils literal"><span class="pre">self.on_line</span></tt> returns something falsey, then it is skipped, otherwise it is appended to a <tt class="docutils literal"><span class="pre">list</span></tt>, and once the length of that list is equal to that of <tt class="docutils literal"><span class="pre">limit</span></tt>, it is yielded to the decode_proc which called it, and thus to the decoding process.</p>
 </dd></dl>
 
 <dl class="method">
@@ -229,6 +249,10 @@ regarding the names of the variables, their ranges, data conversions and units.<
 <dt id="core.VariableList.addvar">
 <tt class="descname">addvar</tt><big>(</big><em>name</em>, <em>longname</em>, <em>dtype</em>, <em>shape</em>, <em>unit</em>, <em>index=None</em>, <em>scale=1</em>, <em>offset=0</em>, <em>mn=0</em>, <em>mx=1</em><big>)</big><a class="headerlink" href="#core.VariableList.addvar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a variable to the variable list.</p>
+<dl class="docutils">
+<dt>args:</dt>
+<dd>name (str): short, space-free name which should be thought of the &#8220;column name&#8221;</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
