@@ -8,7 +8,7 @@
     
     <title>Core Classes &mdash; Pyodec 0.0 documentation</title>
     
-    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -52,57 +52,57 @@
             
   <div class="section" id="core-classes">
 <h1>Core Classes<a class="headerlink" href="#core-classes" title="Permalink to this headline">¶</a></h1>
-<p>The classes defined in the <tt class="docutils literal"><span class="pre">pyodec.code</span></tt> namespace. These are used by developers to create new decoder objects, compliant with the Pyodec decoder rule set.</p>
-<span class="target" id="module-pyodec.core"></span><dl class="class">
-<dt id="pyodec.core.Decoder">
-<em class="property">class </em><tt class="descclassname">pyodec.core.</tt><tt class="descname">Decoder</tt><big>(</big><em>vars=False</em>, <em>inherit=False</em>, <em>fixed_vars=False</em><big>)</big><a class="headerlink" href="#pyodec.core.Decoder" title="Permalink to this definition">¶</a></dt>
+<p>The classes defined in the <tt class="docutils literal"><span class="pre">pyodec.core</span></tt> namespace. These are used by developers to create new decoder objects, compliant with the Pyodec decoder rule set.</p>
+<span class="target" id="module-core"></span><dl class="class">
+<dt id="core.Decoder">
+<em class="property">class </em><tt class="descclassname">core.</tt><tt class="descname">Decoder</tt><big>(</big><em>vars=False</em>, <em>inherit=False</em>, <em>fixed_vars=False</em><big>)</big><a class="headerlink" href="#core.Decoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>The root decoer object, primarily controls and standardizes interaction
 between</p>
 <dl class="method">
-<dt id="pyodec.core.Decoder.get_dtype">
-<tt class="descname">get_dtype</tt><big>(</big><em>stnid=False</em><big>)</big><a class="headerlink" href="#pyodec.core.Decoder.get_dtype" title="Permalink to this definition">¶</a></dt>
+<dt id="core.Decoder.get_dtype">
+<tt class="descname">get_dtype</tt><big>(</big><em>stnid=False</em><big>)</big><a class="headerlink" href="#core.Decoder.get_dtype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a numpy-recarray-compliant datatype statement which can be 
 used to create a recarray from any single observation.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyodec.core.Decoder.get_fixed_vars">
-<tt class="descname">get_fixed_vars</tt><big>(</big><em>stnid=False</em><big>)</big><a class="headerlink" href="#pyodec.core.Decoder.get_fixed_vars" title="Permalink to this definition">¶</a></dt>
+<dt id="core.Decoder.get_fixed_vars">
+<tt class="descname">get_fixed_vars</tt><big>(</big><em>stnid=False</em><big>)</big><a class="headerlink" href="#core.Decoder.get_fixed_vars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all the variables in a list of dictionaries describing them and containing their data.</p>
-<p>alias of <a class="reference internal" href="#pyodec.core.FixedVariableList.getvars" title="pyodec.core.FixedVariableList.getvars"><tt class="xref py py-func docutils literal"><span class="pre">FixedVariableList.getvars()</span></tt></a> for the <tt class="docutils literal"><span class="pre">Decoder</span></tt> object&#8217;s contained <tt class="docutils literal"><span class="pre">FixedVariableList</span></tt> object.</p>
+<p>alias of <a class="reference internal" href="#core.FixedVariableList.getvars" title="core.FixedVariableList.getvars"><tt class="xref py py-func docutils literal"><span class="pre">FixedVariableList.getvars()</span></tt></a> for the <tt class="docutils literal"><span class="pre">Decoder</span></tt> object&#8217;s contained <tt class="docutils literal"><span class="pre">FixedVariableList</span></tt> object.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyodec.core.Decoder.getvars">
-<tt class="descname">getvars</tt><big>(</big><em>stnid=False</em><big>)</big><a class="headerlink" href="#pyodec.core.Decoder.getvars" title="Permalink to this definition">¶</a></dt>
+<dt id="core.Decoder.getvars">
+<tt class="descname">getvars</tt><big>(</big><em>stnid=False</em><big>)</big><a class="headerlink" href="#core.Decoder.getvars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all the variables in a list of dictionaries describing them.</p>
-<p>alias of <a class="reference internal" href="#pyodec.core.VariableList.getvars" title="pyodec.core.VariableList.getvars"><tt class="xref py py-func docutils literal"><span class="pre">VariableList.getvars()</span></tt></a> for the <tt class="docutils literal"><span class="pre">Decoder</span></tt> object&#8217;s contained <tt class="docutils literal"><span class="pre">VariableList</span></tt> object.</p>
+<p>alias of <a class="reference internal" href="#core.VariableList.getvars" title="core.VariableList.getvars"><tt class="xref py py-func docutils literal"><span class="pre">VariableList.getvars()</span></tt></a> for the <tt class="docutils literal"><span class="pre">Decoder</span></tt> object&#8217;s contained <tt class="docutils literal"><span class="pre">VariableList</span></tt> object.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyodec.core.Decoder.varpos">
-<tt class="descname">varpos</tt><big>(</big><em>varname</em><big>)</big><a class="headerlink" href="#pyodec.core.Decoder.varpos" title="Permalink to this definition">¶</a></dt>
+<dt id="core.Decoder.varpos">
+<tt class="descname">varpos</tt><big>(</big><em>varname</em><big>)</big><a class="headerlink" href="#core.Decoder.varpos" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the integer array index of the variable column named <tt class="docutils literal"><span class="pre">varname</span></tt>. This value can be used in conjunction
 with a returned array of data to extract a single known column (if you do not wish to compile the data int a recarray)</p>
-<p>alias of <a class="reference internal" href="#pyodec.core.VariableList.get_index" title="pyodec.core.VariableList.get_index"><tt class="xref py py-func docutils literal"><span class="pre">VariableList.get_index()</span></tt></a> for the <tt class="docutils literal"><span class="pre">Decoder</span></tt> object&#8217;s contained <tt class="docutils literal"><span class="pre">VariableList</span></tt> object.</p>
+<p>alias of <a class="reference internal" href="#core.VariableList.get_index" title="core.VariableList.get_index"><tt class="xref py py-func docutils literal"><span class="pre">VariableList.get_index()</span></tt></a> for the <tt class="docutils literal"><span class="pre">Decoder</span></tt> object&#8217;s contained <tt class="docutils literal"><span class="pre">VariableList</span></tt> object.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="pyodec.core.FileDecoder">
-<em class="property">class </em><tt class="descclassname">pyodec.core.</tt><tt class="descname">FileDecoder</tt><big>(</big><em>vars=False</em>, <em>inherit=False</em>, <em>fixed_vars=False</em><big>)</big><a class="headerlink" href="#pyodec.core.FileDecoder" title="Permalink to this definition">¶</a></dt>
+<dt id="core.FileDecoder">
+<em class="property">class </em><tt class="descclassname">core.</tt><tt class="descname">FileDecoder</tt><big>(</big><em>vars=False</em>, <em>inherit=False</em>, <em>fixed_vars=False</em><big>)</big><a class="headerlink" href="#core.FileDecoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>The inheritable class for a decoder of files.</p>
 <dl class="method">
-<dt id="pyodec.core.FileDecoder.decode">
-<tt class="descname">decode</tt><big>(</big><em>filepath</em>, <em>generator=False</em>, <em>limit=1000</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pyodec.core.FileDecoder.decode" title="Permalink to this definition">¶</a></dt>
+<dt id="core.FileDecoder.decode">
+<tt class="descname">decode</tt><big>(</big><em>filepath</em>, <em>generator=False</em>, <em>limit=1000</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#core.FileDecoder.decode" title="Permalink to this definition">¶</a></dt>
 <dd><p>run the contained decode_proc as either a generator or a procedural decoder. 
 If run as a generator, generator=True.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyodec.core.FileDecoder.decode_chunks">
-<tt class="descname">decode_chunks</tt><big>(</big><em>filepath</em>, <em>limit</em>, <em>begin=None</em>, <em>end=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pyodec.core.FileDecoder.decode_chunks" title="Permalink to this definition">¶</a></dt>
+<dt id="core.FileDecoder.decode_chunks">
+<tt class="descname">decode_chunks</tt><big>(</big><em>filepath</em>, <em>limit</em>, <em>begin=None</em>, <em>end=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#core.FileDecoder.decode_chunks" title="Permalink to this definition">¶</a></dt>
 <dd><p>A predefined version of the <tt class="docutils literal"><span class="pre">decode_proc</span></tt> function that can be used 
 for instances where decoding only requires opening the file and passing
 it to the <tt class="docutils literal"><span class="pre">self.read_chunks(...)</span></tt> method.</p>
@@ -115,8 +115,8 @@ it to the <tt class="docutils literal"><span class="pre">self.read_chunks(...)</
 </dd></dl>
 
 <dl class="method">
-<dt id="pyodec.core.FileDecoder.decode_lines">
-<tt class="descname">decode_lines</tt><big>(</big><em>filepath</em>, <em>limit</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pyodec.core.FileDecoder.decode_lines" title="Permalink to this definition">¶</a></dt>
+<dt id="core.FileDecoder.decode_lines">
+<tt class="descname">decode_lines</tt><big>(</big><em>filepath</em>, <em>limit</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#core.FileDecoder.decode_lines" title="Permalink to this definition">¶</a></dt>
 <dd><p>A precompiled generator-based decoder allowing line-decoding without having
 to write the standard modules - if the default options are all that are needed.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyDecoder</span><span class="p">(</span><span class="n">FileDecoder</span><span class="p">):</span>
@@ -128,8 +128,8 @@ to write the standard modules - if the default options are all that are needed.<
 </dd></dl>
 
 <dl class="method">
-<dt id="pyodec.core.FileDecoder.decode_proc">
-<tt class="descname">decode_proc</tt><big>(</big><em>filepath</em>, <em>limit</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pyodec.core.FileDecoder.decode_proc" title="Permalink to this definition">¶</a></dt>
+<dt id="core.FileDecoder.decode_proc">
+<tt class="descname">decode_proc</tt><big>(</big><em>filepath</em>, <em>limit</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#core.FileDecoder.decode_proc" title="Permalink to this definition">¶</a></dt>
 <dd><p><strong>mandatory developer defined function</strong>
 this should be a standardized function - defined by the decoder
 which takes a file path, and opens it, and calls read_lines or read_chunks
@@ -139,34 +139,34 @@ work for most applications. Sorry.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyodec.core.FileDecoder.on_chunk">
-<tt class="descname">on_chunk</tt><big>(</big><em>chunk</em><big>)</big><a class="headerlink" href="#pyodec.core.FileDecoder.on_chunk" title="Permalink to this definition">¶</a></dt>
+<dt id="core.FileDecoder.on_chunk">
+<tt class="descname">on_chunk</tt><big>(</big><em>chunk</em><big>)</big><a class="headerlink" href="#core.FileDecoder.on_chunk" title="Permalink to this definition">¶</a></dt>
 <dd><p>return a tuple from an observation &#8211; defined by the specific decoder.
 return False if the ob should be skipped</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyodec.core.FileDecoder.on_line">
-<tt class="descname">on_line</tt><big>(</big><em>line</em><big>)</big><a class="headerlink" href="#pyodec.core.FileDecoder.on_line" title="Permalink to this definition">¶</a></dt>
+<dt id="core.FileDecoder.on_line">
+<tt class="descname">on_line</tt><big>(</big><em>line</em><big>)</big><a class="headerlink" href="#core.FileDecoder.on_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>return a tuple whose indices correspond to those of varlist.
 return False if the ob should be skipped</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyodec.core.FileDecoder.read_chunks">
-<tt class="descname">read_chunks</tt><big>(</big><em>yieldcount</em>, <em>gfhandle</em>, <em>begin=False</em>, <em>end=False</em><big>)</big><a class="headerlink" href="#pyodec.core.FileDecoder.read_chunks" title="Permalink to this definition">¶</a></dt>
+<dt id="core.FileDecoder.read_chunks">
+<tt class="descname">read_chunks</tt><big>(</big><em>yieldcount</em>, <em>gfhandle</em>, <em>begin=False</em>, <em>end=False</em><big>)</big><a class="headerlink" href="#core.FileDecoder.read_chunks" title="Permalink to this definition">¶</a></dt>
 <dd><p>generator form of chunk reading</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyodec.core.FileDecoder.read_lines">
-<tt class="descname">read_lines</tt><big>(</big><em>yieldcount</em>, <em>gfhandle</em><big>)</big><a class="headerlink" href="#pyodec.core.FileDecoder.read_lines" title="Permalink to this definition">¶</a></dt>
+<dt id="core.FileDecoder.read_lines">
+<tt class="descname">read_lines</tt><big>(</big><em>yieldcount</em>, <em>gfhandle</em><big>)</big><a class="headerlink" href="#core.FileDecoder.read_lines" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the file, and yield the # of obs as a generator</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyodec.core.FileDecoder.yield_update">
-<tt class="descname">yield_update</tt><big>(</big><em>update</em><big>)</big><a class="headerlink" href="#pyodec.core.FileDecoder.yield_update" title="Permalink to this definition">¶</a></dt>
+<dt id="core.FileDecoder.yield_update">
+<tt class="descname">yield_update</tt><big>(</big><em>update</em><big>)</big><a class="headerlink" href="#core.FileDecoder.yield_update" title="Permalink to this definition">¶</a></dt>
 <dd><p>A reading process can throw updates if it wishes. The
 default self._throw_updates must be set to true.</p>
 </dd></dl>
@@ -174,14 +174,14 @@ default self._throw_updates must be set to true.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="pyodec.core.FixedVariableList">
-<em class="property">class </em><tt class="descclassname">pyodec.core.</tt><tt class="descname">FixedVariableList</tt><a class="headerlink" href="#pyodec.core.FixedVariableList" title="Permalink to this definition">¶</a></dt>
+<dt id="core.FixedVariableList">
+<em class="property">class </em><tt class="descclassname">core.</tt><tt class="descname">FixedVariableList</tt><a class="headerlink" href="#core.FixedVariableList" title="Permalink to this definition">¶</a></dt>
 <dd><p>A holder for storing, manipluating and interacting with variables which are fixed with relation
 to the returned dataset. These inlude the AGL heights of a fixed-gate remote sensor, beam names,
 elevation angles, etc.</p>
 <dl class="method">
-<dt id="pyodec.core.FixedVariableList.addvar">
-<tt class="descname">addvar</tt><big>(</big><em>name</em>, <em>unit</em>, <em>dtype</em>, <em>data</em><big>)</big><a class="headerlink" href="#pyodec.core.FixedVariableList.addvar" title="Permalink to this definition">¶</a></dt>
+<dt id="core.FixedVariableList.addvar">
+<tt class="descname">addvar</tt><big>(</big><em>name</em>, <em>unit</em>, <em>dtype</em>, <em>data</em><big>)</big><a class="headerlink" href="#core.FixedVariableList.addvar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Append a fixed variable to the set of variables. Provide a name, unit, data type and the value 
 of the fixed variable (an array of heights, angles, whatever)</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -195,8 +195,8 @@ of the fixed variable (an array of heights, angles, whatever)</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyodec.core.FixedVariableList.getvars">
-<tt class="descname">getvars</tt><big>(</big><big>)</big><a class="headerlink" href="#pyodec.core.FixedVariableList.getvars" title="Permalink to this definition">¶</a></dt>
+<dt id="core.FixedVariableList.getvars">
+<tt class="descname">getvars</tt><big>(</big><big>)</big><a class="headerlink" href="#core.FixedVariableList.getvars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all the fixed variables from the set as a list of dictionaries with keys of</p>
 <ul class="simple">
 <li><tt class="docutils literal"><span class="pre">name</span></tt></li>
@@ -208,32 +208,32 @@ of the fixed variable (an array of heights, angles, whatever)</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="pyodec.core.MessageDecoder">
-<em class="property">class </em><tt class="descclassname">pyodec.core.</tt><tt class="descname">MessageDecoder</tt><big>(</big><em>vars=False</em>, <em>inherit=False</em>, <em>fixed_vars=False</em><big>)</big><a class="headerlink" href="#pyodec.core.MessageDecoder" title="Permalink to this definition">¶</a></dt>
+<dt id="core.MessageDecoder">
+<em class="property">class </em><tt class="descclassname">core.</tt><tt class="descname">MessageDecoder</tt><big>(</big><em>vars=False</em>, <em>inherit=False</em>, <em>fixed_vars=False</em><big>)</big><a class="headerlink" href="#core.MessageDecoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Just a wrapper for the decoder class, because message decoders can (and should)
 contain a varlist just as the main decoders</p>
 <dl class="method">
-<dt id="pyodec.core.MessageDecoder.decode">
-<tt class="descname">decode</tt><big>(</big><em>message</em><big>)</big><a class="headerlink" href="#pyodec.core.MessageDecoder.decode" title="Permalink to this definition">¶</a></dt>
+<dt id="core.MessageDecoder.decode">
+<tt class="descname">decode</tt><big>(</big><em>message</em><big>)</big><a class="headerlink" href="#core.MessageDecoder.decode" title="Permalink to this definition">¶</a></dt>
 <dd><p>the decode method should be refactored, and used to decode a string message</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="pyodec.core.VariableList">
-<em class="property">class </em><tt class="descclassname">pyodec.core.</tt><tt class="descname">VariableList</tt><a class="headerlink" href="#pyodec.core.VariableList" title="Permalink to this definition">¶</a></dt>
+<dt id="core.VariableList">
+<em class="property">class </em><tt class="descclassname">core.</tt><tt class="descname">VariableList</tt><a class="headerlink" href="#core.VariableList" title="Permalink to this definition">¶</a></dt>
 <dd><p>the requrements of the varaible list are somewhat strict, it must provide information
 regarding the names of the variables, their ranges, data conversions and units.</p>
 <dl class="method">
-<dt id="pyodec.core.VariableList.addvar">
-<tt class="descname">addvar</tt><big>(</big><em>name</em>, <em>longname</em>, <em>dtype</em>, <em>shape</em>, <em>unit</em>, <em>index=None</em>, <em>scale=1</em>, <em>offset=0</em>, <em>mn=0</em>, <em>mx=1</em><big>)</big><a class="headerlink" href="#pyodec.core.VariableList.addvar" title="Permalink to this definition">¶</a></dt>
+<dt id="core.VariableList.addvar">
+<tt class="descname">addvar</tt><big>(</big><em>name</em>, <em>longname</em>, <em>dtype</em>, <em>shape</em>, <em>unit</em>, <em>index=None</em>, <em>scale=1</em>, <em>offset=0</em>, <em>mn=0</em>, <em>mx=1</em><big>)</big><a class="headerlink" href="#core.VariableList.addvar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a variable to the variable list.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyodec.core.VariableList.dtype">
-<tt class="descname">dtype</tt><big>(</big><big>)</big><a class="headerlink" href="#pyodec.core.VariableList.dtype" title="Permalink to this definition">¶</a></dt>
+<dt id="core.VariableList.dtype">
+<tt class="descname">dtype</tt><big>(</big><big>)</big><a class="headerlink" href="#core.VariableList.dtype" title="Permalink to this definition">¶</a></dt>
 <dd><p>This utility will produce the numpy recarray dtype entry
 for the pytable which will hold the data contained within.</p>
 <p>This description could be used to create a recarray of the returned data.</p>
@@ -244,34 +244,34 @@ for the pytable which will hold the data contained within.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyodec.core.VariableList.get_index">
-<tt class="descname">get_index</tt><big>(</big><em>varname</em><big>)</big><a class="headerlink" href="#pyodec.core.VariableList.get_index" title="Permalink to this definition">¶</a></dt>
+<dt id="core.VariableList.get_index">
+<tt class="descname">get_index</tt><big>(</big><em>varname</em><big>)</big><a class="headerlink" href="#core.VariableList.get_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>return the index of the variable with the name <tt class="docutils literal"><span class="pre">varname</span></tt></p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyodec.core.VariableList.getvar">
-<tt class="descname">getvar</tt><big>(</big><em>varname</em><big>)</big><a class="headerlink" href="#pyodec.core.VariableList.getvar" title="Permalink to this definition">¶</a></dt>
+<dt id="core.VariableList.getvar">
+<tt class="descname">getvar</tt><big>(</big><em>varname</em><big>)</big><a class="headerlink" href="#core.VariableList.getvar" title="Permalink to this definition">¶</a></dt>
 <dd><p>return a dictionary of values for a specific variable identified by the variable name given.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyodec.core.VariableList.getvar_by_id">
-<tt class="descname">getvar_by_id</tt><big>(</big><em>i</em><big>)</big><a class="headerlink" href="#pyodec.core.VariableList.getvar_by_id" title="Permalink to this definition">¶</a></dt>
+<dt id="core.VariableList.getvar_by_id">
+<tt class="descname">getvar_by_id</tt><big>(</big><em>i</em><big>)</big><a class="headerlink" href="#core.VariableList.getvar_by_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>return a dictionary of values for a variable identified by index <tt class="docutils literal"><span class="pre">i</span></tt></p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyodec.core.VariableList.getvars">
-<tt class="descname">getvars</tt><big>(</big><big>)</big><a class="headerlink" href="#pyodec.core.VariableList.getvars" title="Permalink to this definition">¶</a></dt>
+<dt id="core.VariableList.getvars">
+<tt class="descname">getvars</tt><big>(</big><big>)</big><a class="headerlink" href="#core.VariableList.getvars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of dictionaries describing all the variables in the set.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyodec.core.VariableList.tables_desc">
-<tt class="descname">tables_desc</tt><big>(</big><big>)</big><a class="headerlink" href="#pyodec.core.VariableList.tables_desc" title="Permalink to this definition">¶</a></dt>
+<dt id="core.VariableList.tables_desc">
+<tt class="descname">tables_desc</tt><big>(</big><big>)</big><a class="headerlink" href="#core.VariableList.tables_desc" title="Permalink to this definition">¶</a></dt>
 <dd><div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.0: </span>Use <a class="reference internal" href="#pyodec.core.VariableList.dtype" title="pyodec.core.VariableList.dtype"><tt class="xref py py-func docutils literal"><span class="pre">dtype()</span></tt></a> instead.</p>
+<p><span class="versionmodified">Deprecated since version 0.0: </span>Use <a class="reference internal" href="#core.VariableList.dtype" title="core.VariableList.dtype"><tt class="xref py py-func docutils literal"><span class="pre">dtype()</span></tt></a> instead.</p>
 </div>
 </dd></dl>
 
