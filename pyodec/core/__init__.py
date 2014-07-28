@@ -4,15 +4,30 @@ import traceback
 from numpy import array
 
 class Decoder(object):
-    vars = False
-    fixed_vars = False
-    inherit = False
+    """
+    The root decoer object, primarily controls and standardizes interaction
+    between 
+    """
+    vars = None
+    """
+        Holds the decoder class' ``VariableList`` object. 
+        
+        VariableLists are a **class** attribute, which allows the developer to define the ``vars`` value without rewriting the ``__init__()`` method. Variables should be either a constant for all uses of the decoder, or a variable that changes in the process of decoding. Thus, this may limit the ability to execute multiple decoders in a thread.
+    """
+    fixed_vars = None
+    """
+    the location of the ``FixedVariableList`` object within a ``Decoder``
+    """
+    inherit = None
+    """
+        Predefine another ``Decoder`` descendant to inherit variables from on ``__init__()``
+    """
     state = {'identifier':False,
             'index':False,
             } # some unique identifier for the current state of the return
     def __init__(self, vars=False, inherit=False, fixed_vars=False):
         """
-        create a MessageDecoder object, which has methods for opening, and looping
+        Create a MessageDecoder object, which has methods for opening, and looping
         through files. The _line_read method and the _chunk_read methods
         should be altered for a specific reader.
         
@@ -22,11 +37,16 @@ class Decoder(object):
         Variable dictionary returns the maximum shape, and name of the
         variables which will be returned by the decoder (per ob, it will
         return an array of these arrays)
+        
+        vars = 5
+        
+        fixed_vars = 10
+        
+        state = dict
         """
         # this attribute indicates if the decoder will produce data for multiple stations
         # if yes, then there is a specific format to use (and a special format for get_dtype)
         # those decoders also have the op
-        self.station_collection=False
         if inherit:
             self.vars = inherit.vars
             self.fixed_vars = inherit.fixed_vars
@@ -50,24 +70,31 @@ class Decoder(object):
             
     def varpos(self, varname):
         """
-        return the index of the variable with the name varname
+        Return the integer array index of the variable column named ``varname``. This value can be used in conjunction
+        with a returned array of data to extract a single known column (if you do not wish to compile the data int a recarray)
+        
+        alias of :func:`VariableList.get_index()` for the ``Decoder`` object's contained ``VariableList`` object.
         """
         return self.vars.get_index(varname)
     def getvars(self, stnid=False):
-        if stnid and type(self.vars) == dict:
-            return self.vars[stnid].getvars()
+        """
+        Get all the variables in a list of dictionaries describing them.
+        
+        alias of :func:`VariableList.getvars()` for the ``Decoder`` object's contained ``VariableList`` object.
+        """
         return self.vars.getvars()
     def get_fixed_vars(self, stnid=False):
-        if stnid and type(self.fixed_vars) == dict:
-            return self.fixed_vars[stnid].getvars()
+        """
+        Get all the variables in a list of dictionaries describing them and containing their data.
+        
+        alias of :func:`FixedVariableList.getvars()` for the ``Decoder`` object's contained ``FixedVariableList`` object.
+        """
         return self.fixed_vars.getvars()
     def get_dtype(self, stnid=False):
         """
         Get a numpy-recarray-compliant datatype statement which can be 
         used to create a recarray from any single observation.
         """
-        if stnid and type(self.vars) == dict:
-            return self.vars[stnid].tables_desc()
         return self.vars.tables_desc()
 
 class FileDecoder(Decoder):
@@ -88,7 +115,7 @@ class FileDecoder(Decoder):
             for d in self.decode_proc(filepath, limit, **kwargs):
                 data+=d
             return d
-    def _line_read(self, gfhandle):
+    def __line_read(self, gfhandle):
         """
         This method lets you define the behavior for reading every line
         """
@@ -96,7 +123,7 @@ class FileDecoder(Decoder):
             if line[:2] == '::': continue
             yield line
             
-    def _chunk_read(self, gfhandle, begin=False, end=False):
+    def __chunk_read(self, gfhandle, begin=False, end=False):
         """
         this method lets you define the behavior for reading the file by chunks
         (which actually simply redefines the _line_read for chunking)
@@ -127,18 +154,22 @@ class FileDecoder(Decoder):
         if endstr:
             yield endstr
     
-    def read_lines(self, yieldcount, gfhandle):
+    def read_lines(self, limit, gfhandle):
         """
-        Read the file, and yield the # of obs as a generator
+        Handle reading a file line-by-line, throwing each received line in a file (split by ``for line in file:``) to the ``self.on_line`` string decoder.
+        
+        If ``self.on_line`` returns something falsey, then it is skipped, otherwise it is appended to a ``list``, and once the length of that list is equal to that of ``limit``, it is yielded to the decode_proc which called it, and thus to the decoding process.
+        
         """
         data = []
         try:
-            for line in self._line_read(gfhandle):
+            for line in self.__line_read(gfhandle):
                 ob = self.on_line(line)
                 if ob:
                     # if ob data was retunred for this instance, then save it
                     data.append(ob)
-                    if len(data) >= yieldcount:
+                    if len(data) >= limit:
+                        #yield np.rec.fromrecords(data,dtype=self.get_dtype())
                         yield data
                         data = []
         except KeyboardInterrupt:
@@ -148,6 +179,7 @@ class FileDecoder(Decoder):
             traceback.print_exc()
             return
         # yield remaining obs
+        #yield np.rec.fromrecords(data,dtype=self.get_dtype())
         yield data
 
     
@@ -157,11 +189,15 @@ class FileDecoder(Decoder):
         """
         data = []
         try:
-            for chunk in self._chunk_read(gfhandle, begin, end):
-                ob = self.on_chunk(chunk)
+            for chunk in self.__chunk_read(gfhandle, begin, end):
+                try:
+                    ob = self.on_chunk(chunk)
+                except:
+                    traceback.print_exc()
                 if ob:
                     data.append(ob)
                     if len(data) >= yieldcount:
+                        #yield np.rec.fromrecords(data,dtype=self.get_dtype())
                         yield data
                         data = []
         except KeyboardInterrupt:
@@ -171,6 +207,7 @@ class FileDecoder(Decoder):
             traceback.print_exc()
             return
         # yield remaining obs
+        # yield np.rec.fromrecords(data,dtype=self.get_dtype())
         yield data
     
     @classmethod
@@ -207,19 +244,36 @@ class FileDecoder(Decoder):
         return False if the ob should be skipped
         """
         return 'undefined function'
-    def decode_chunks(self, filepath, limit, begin=None, end=None):
+    def decode_chunks(self, filepath, limit, begin=None, end=None, **kwargs):
         """
-        A "precompiled" generator-based decoder, to allow you to skip
-        having to write the standard lines.
+        A predefined version of the ``decode_proc`` function that can be used 
+        for instances where decoding only requires opening the file and passing
+        it to the ``self.read_chunks(...)`` method.
+        
+        .. code-block:: python
+
+            class MyDecoder(FileDecoder):
+                ...
+                def decode_proc(self, path, limit=1000, *kwargs):
+                    return self.decode_chunks(path, limit, begin=chr(2), **kwargs)
         """
         if os.path.exists(filepath):
             with self.open_ascii(filepath) as fil:
                 for data in self.read_chunks(limit, filehandle, end=end, begin=begin):
                     yield data
-    def decode_lines(self, filepath, limit):
+                    
+    def decode_lines(self, filepath, limit, **kwargs):
         """
         A precompiled generator-based decoder allowing line-decoding without having
         to write the standard modules - if the default options are all that are needed.
+        
+        .. code-block:: python
+
+            class MyDecoder(FileDecoder):
+                ...
+                def decode_proc(self, *args, *kwargs):
+                    return self.decode_lines(*args, **kwargs)
+        
         """
         if os.path.exists(filepath):
             with self.open_ascii(filepath) as fil:
@@ -227,6 +281,7 @@ class FileDecoder(Decoder):
                     yield data
     def decode_proc(self, filepath, limit, **kwargs):
         """
+        **mandatory developer defined function**
         this should be a standardized function - defined by the decoder
         which takes a file path, and opens it, and calls read_lines or read_chunks
         and then returns the data those two functions produce.
@@ -275,6 +330,9 @@ class VariableList(object):
     def addvar(self, name, longname, dtype, shape, unit, index=None, scale=1, offset=0, mn=0, mx=1):
         """
         Add a variable to the variable list. 
+        
+        args:
+            name (str): short, space-free name which should be thought of the "column name" 
         """
         if index == None:
             self._append(name,longname,dtype,shape,unit,scale,offset,mn,mx)
@@ -362,15 +420,15 @@ class VariableList(object):
         return len(self.varnames)
     
     def getvar(self, varname):
-        # lazy function for grabbing the info about a specific variable
-        i=0
-        for v in self.varnames:
-            if varname==v:
-                break
-            i+=1
-        return self.getvar_by_id(i)
+        """
+            return a dictionary of values for a specific variable identified by the variable name given.
+        """
+        return self.getvar_by_id(self.get_index(varname))
     
     def getvar_by_id(self, i):
+        """
+            return a dictionary of values for a variable identified by index ``i``
+        """
         if i >= len(self.varnames):
             # bad index
             return
@@ -385,6 +443,9 @@ class VariableList(object):
                 'max':self.maxs[i] }
     
     def getvars(self, ):
+        """
+        Return a list of dictionaries describing all the variables in the set.
+        """
         data = []
         for i in range(len(self.varnames)):
             data.append(self.getvar_by_id(i))
@@ -392,7 +453,7 @@ class VariableList(object):
     
     def get_index(self, varname):
         """
-        return the index of the variable with the name 'varname'
+        return the index of the variable with the name ``varname``
         """
         if varname in self.indices:
             return self.indices[varname]
@@ -401,7 +462,8 @@ class VariableList(object):
             
     def tables_desc(self):
         """
-        DEPRECATED: alias for self.dtype()
+        .. deprecated:: 0.0
+            Use :func:`dtype()` instead.
         """
         return self.dtype()
     
@@ -413,32 +475,54 @@ class VariableList(object):
         This description could be used to create a recarray of the returned data.
         
         To insert into pytables as a description, create the array with
-        np.array([],dtype=decoder.tables_desc())
+        
+        .. code-block:: python
+        
+            np.array([],dtype=decoder.vars.dtype())
+        
         """
         dtype = []
         i=0
         for v in self.varnames:
             if self.shapes[i]:
-                dtype.append( (v,self.dtypes[i],self.shapes[i]) )
+                dtype.append( (v, self.dtypes[i], self.shapes[i]) )
             else:
-                dtype.append( (v,self.dtypes[i]) )
+                dtype.append( (v, self.dtypes[i]) )
             i+=1
         return dtype
     
 class FixedVariableList(object):
     """
-    Similar to a variable list, but much simpler, with fewer functions
+        A holder for storing, manipluating and interacting with variables which are fixed with relation
+        to the returned dataset. These inlude the AGL heights of a fixed-gate remote sensor, beam names,
+        elevation angles, etc.
     """
     def __init__(self, ):
+        """
+            init
+        """
         self.names  = []
         self.units  = []
         self.data   = []
     def addvar(self, name, unit, dtype, data):
+        """
+            Append a fixed variable to the set of variables. Provide a name, unit, data type and the value 
+            of the fixed variable (an array of heights, angles, whatever)
+            
+            :todo: Remove dtype, add long-description
+        """
         self.names.append(name)
         self.units.append(unit)
         self.data.append(array(data,dtype=dtype))
         # data is a recarray
     def getvars(self, ):
+        """
+            Get all the fixed variables from the set as a list of dictionaries with keys of 
+            
+            * ``name``
+            * ``unit``
+            * ``data``
+        """
         data=[]
         for i in range(len(self.names)):
             data.append({

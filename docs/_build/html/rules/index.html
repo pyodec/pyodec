@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Decoder Protocols &amp; Rules &mdash; Pyodec 0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Pyodec 0.0 documentation" href="../index.html" />
+    <link rel="next" title="Main Library" href="../lib/index.html" />
+    <link rel="prev" title="Pyodec Introduction" href="../intro.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../lib/index.html" title="Main Library"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../intro.html" title="Pyodec Introduction"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Pyodec 0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="decoder-protocols-rules">
+<h1>Decoder Protocols &amp; Rules<a class="headerlink" href="#decoder-protocols-rules" title="Permalink to this headline">¶</a></h1>
+<p>This outlines how data should be returned. This document is really all there is to pyodec. It is split into 3 sections, input, output, and library rules.</p>
+<p>Though Pyodec is really a loosely connected set of independently written codes, it is important for the data model API to be compatible between different decoders. The goal of these rules will be to allow a single piece of code to take a diverse set of files (knowing their decoders), and both decode them and look at the data with the same code.</p>
+<p>Basic python rules for internal consistency, variable and method naming, etc. should be followed.</p>
+<p>This is python, so there are no private methods. Rewrite/reallocate any internal method as you please, but when doing so please try to follow these usage guidelines. If you find a better way to do the central decode method, then share it!</p>
+<div class="section" id="general">
+<h2>General<a class="headerlink" href="#general" title="Permalink to this headline">¶</a></h2>
+<p>A decoder object is a class, which supports methods defined in the sections below relating to variables and a primary decoding function. It is essential that any decoder class supports decoding in the methods described, inputs as described, and handles variables in a very similar manner.</p>
+</div>
+<div class="section" id="input-client-interfacing">
+<h2>Input &amp; client interfacing<a class="headerlink" href="#input-client-interfacing" title="Permalink to this headline">¶</a></h2>
+<p><strong>Decoders should accept file path string, file object, and (where possible) string inputs to the decoder method as the first argument.</strong></p>
+<p>At a minimum, a decoder class should contain a decode method which can be run conforming to these input and interface protocols.</p>
+<p>Decoders should produce a generator object, (usually using yield), and should allow the keyword argument generator control whether a generator or list is returned. generator should default to True.</p>
+<div class="section" id="required-decode-keyword-arguments">
+<h3>Required <tt class="docutils literal"><span class="pre">.decode()</span></tt> keyword arguments<a class="headerlink" href="#required-decode-keyword-arguments" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="3%" />
+<col width="6%" />
+<col width="79%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Argument</th>
+<th class="head">Type</th>
+<th class="head">Default</th>
+<th class="head">Purpose</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">limit</span></tt></td>
+<td>int</td>
+<td>1000</td>
+<td>Number of discrete data results
+to accumulate before yielding</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">generator</span></tt></td>
+<td>bool</td>
+<td>False</td>
+<td>Produce a generator based on limit,
+or a single set of values representing the entire dataset.</td>
+</tr>
+</tbody>
+</table>
+<p>Warning Not all decoders at this time implement this protocol, and simply return generators at all times.
+These input requirements will evolve and expand over time (such as a requirement to handle certain keyword arguments properly)</p>
+</div>
+</div>
+<div class="section" id="data-output-and-returning">
+<h2>Data output and returning<a class="headerlink" href="#data-output-and-returning" title="Permalink to this headline">¶</a></h2>
+<p>The possible range of outputs is far more diverse than the possible inputs, however there are a few goals that can be shared.</p>
+<p><strong>Discrete observations (rows) are collected in a list</strong></p>
+<p>Not the other way around. This is slightly less efficient with memory, but it is conceptually much simpler, and allows the second rule to actually work.
+.. highlight:: python</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">yield</span> <span class="p">[(</span><span class="mi">12</span><span class="p">,[</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">]),</span> <span class="p">(</span><span class="mi">12</span><span class="p">,[</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">]),</span> <span class="o">...</span> <span class="p">]</span>
+</pre></div>
+</div>
+<p>not</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">yield</span> <span class="p">[[[</span><span class="mi">12</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="o">...</span><span class="p">],[[</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span><span class="o">...</span><span class="p">]]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This allows the returned data to be considered &#8220;records&#8221; as far as numpy is concerned, and can be easily converted into a very powerful recarray type simply with:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rec</span><span class="o">.</span><span class="n">fromrecords</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">decoder</span><span class="o">.</span><span class="n">get_dtype</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<p>Iterative and procedural output are the same structure</p>
+<p>Simply, you interact with a returned list of values in the same manner, whether you receive them from a yield or a return.</p>
+</div>
+<div class="section" id="variable-and-data-descriptions">
+<h2>Variable and data descriptions<a class="headerlink" href="#variable-and-data-descriptions" title="Permalink to this headline">¶</a></h2>
+<p>This is the least-defined rule of the library. Many data files are self-describing in some manner, and it is essential to extract this metadata from files.</p>
+<p>The current procedure for a decoder class object to reveal the descriptions of the variables is through three methods with the following functionality.</p>
+<p>Method  Function
+.getvars()       Return a list of dictionaries containing name, dtype and shape info, whose indices correspond to the index of the returned dataset (e.g. column names and descriptions).
+.get_fixed_vars()        Return similar info to .getvars(), but includes the actual data elements as well, since fixed vars are not yielded with the rest of the data by default.
+.get_dtype()     Return a valud Numpy-recarray dtype description, such that you could say
+import pyodec.files.myDecoder as dec
+import numpy as np
+for data in dec.decode(src):</p>
+<blockquote>
+<div># convert data into a super awesome numpy recarray
+data = np.rec.fromrecords(data, dtype=decoder.get_dtype())</div></blockquote>
+<p>By default, the return values of these methods are defined by the VariableList and FixedVariableList class objects, but as always, the functionality can be overwritten in a decoder class when necessary.</p>
+<p>As noted, these variable/metadata requirements are not set in stone, and will likely change through development with other users. Obviously backwards compatibility will become an issue pretty quickly, however.</p>
+<blockquote>
+<div>top</div></blockquote>
+<p>Naming conventions
+In accordance with python convention, classes will be in CamelCase, and everything else will be in lowercase with underscores. However, there is some inconsistency regarding naming of decoders, and decoder modules.</p>
+<p>The current naming convention for the files that contain the decoders is to use lowercase and underscores where necessary.</p>
+<p>This is up for debate.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Decoder Protocols &amp; Rules</a><ul>
+<li><a class="reference internal" href="#general">General</a></li>
+<li><a class="reference internal" href="#input-client-interfacing">Input &amp; client interfacing</a><ul>
+<li><a class="reference internal" href="#required-decode-keyword-arguments">Required <tt class="docutils literal"><span class="pre">.decode()</span></tt> keyword arguments</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#data-output-and-returning">Data output and returning</a></li>
+<li><a class="reference internal" href="#variable-and-data-descriptions">Variable and data descriptions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../intro.html"
+                        title="previous chapter">Pyodec Introduction</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../lib/index.html"
+                        title="next chapter">Main Library</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/rules/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../lib/index.html" title="Main Library"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../intro.html" title="Pyodec Introduction"
+             >previous</a> |</li>
+        <li><a href="../index.html">Pyodec 0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Joe Young.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
