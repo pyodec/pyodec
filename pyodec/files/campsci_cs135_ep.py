@@ -4,6 +4,7 @@ import numpy as np
 import os
 import time
 import gzip
+import traceback
 
 """
 Campbell Scienfitic CS-135 with message 006 and epoch timestamps
@@ -29,6 +30,8 @@ class Epcs135D(FileDecoder):
         try:
             data = msgdecode.decode(ob[1])
         except:
+            print "decode failure"
+            traceback.print_exc()
             # there was something ugly in this data... serial hiccups.
             data=False
         if data is False:
@@ -46,3 +49,8 @@ class Epcs135D(FileDecoder):
         
 
 decoder = Epcs135D()
+
+if __name__ == '__main__':
+   import sys
+   fil = sys.argv[1]
+   print decoder.decode(fil)
