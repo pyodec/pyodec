@@ -13,8 +13,8 @@ import scipy.io.netcdf
 nc = scipy.io.netcdf.netcdf_file
 
 class MapDecoder(FileDecoder):
-    vars = VariableList()
-    fixed_vars = FixedVariableList()
+    init_vars = VariableList()
+    init_fixed_vars = FixedVariableList()
     def decode_proc(self, fpath, length, **kwargs):
         # each file contains only a single observation from a number of stations.
         # gather metadata and data for each station, 

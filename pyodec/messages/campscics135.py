@@ -47,7 +47,11 @@ class cs135Dm6(MessageDecoder):
         init_vars.addvar('MLH_QUAL'+ist,'MLH Quality parameter for layer #'+ist,
                     str, 5, '')
     # line 5
-    init_vars.addvar('BS','Attenuated, Normalized, Backscatter coefficient','float32',(2048,),'1/(m sr)')    
+    init_vars.addvar('BS','Attenuated, Normalized, Backscatter coefficient','float32',(2048,),'1/(m sr)')
+
+    init_fixed_vars = FixedVariableList()
+    init_fixed_vars.addvar('HEIGHT','m AGL','int',np.arange(2048)*5)
+
     def decode(self, message):
         OB_LENGTH = 2048 # appears tho be fixed in this format
         SCALING_FACTOR = 1.0e9 # also appears to be fixed

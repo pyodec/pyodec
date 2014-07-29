@@ -29,7 +29,7 @@ class Decoder(object):
             } # some unique identifier for the current state of the return
     def __init__(self, vars=False, inherit=False, fixed_vars=False):
         """
-        Create a MessageDecoder object, which has methods for opening, and looping
+        Create a Decoder object, which has methods for opening, and looping
         through files. The _line_read method and the _chunk_read methods
         should be altered for a specific reader.
         
@@ -49,21 +49,27 @@ class Decoder(object):
         # this attribute indicates if the decoder will produce data for multiple stations
         # if yes, then there is a specific format to use (and a special format for get_dtype)
         # those decoders also have the op
-        if inherit:
-            self.vars = inherit.vars
-            self.fixed_vars = inherit.fixed_vars
-            #inheritance be darned
+        self.fixed_vars = FixedVariableList()
+        # first internal inheritance
         if self.inherit:
             # internally inherit a metadat set
             self.vars = self.inherit.vars
             self.fixed_vars = self.inherit.fixed_vars
-        # or, on init, you can further redefine what the variables are.
+        # then internal vars
         if self.init_vars:
             self.vars = self.init_vars
+        # and internal fixed vars
         if self.init_fixed_vars:
             self.fixed_vars = self.init_fixed_vars
-        else:
-            self.fixed_vars = FixedVariableList()
+        # lastly, passed vars, inherit first
+        if inherit:
+            self.vars = inherit.vars
+            self.fixed_vars = inherit.fixed_vars
+        if vars:
+            self.vars = vars
+        if fixed_vars:
+            self.fixed_vars = fixed_vars
+           
         # then, at the end, if vars still has not been set, then we sortof fail.
         # though this sadly still initialized the object.
         if self.vars is False:

@@ -1,4 +1,4 @@
-from pyodec.core import FileDecoder, VariableList, FixedVariableList
+init_from pyodec.core import FileDecoder, VariableList, FixedVariableList
 import numpy as np
 import os
 import time
@@ -8,34 +8,34 @@ from calendar import timegm
 
 class ASCSdrD(FileDecoder):
     # variables
-    fixed_vars = FixedVariableList()
-    fixed_vars.addvar('HEIGHT','m AGL','int',np.arange(25)*10+10)
-    vars = VariableList()
-    vars.addvar('DATTIM',   'seconds since 1970-01-01 00:00 UTC',int,1,'S')
-    vars.addvar('STNAME',   'Station Name',str,20,'')
-    vars.addvar('WSPD',     'Wind speed','float32',(25,),'m/s')
-    vars.addvar('WDIR',     'Wind direction','float32',(25,),'deg')
-    vars.addvar('WVERT',    'Vertical wind speed','float32',(25,),'m/s')
-    vars.addvar('UINT',     'U-beam intensity','float32',(25,),'mv')
-    vars.addvar('VINT',     'V-beam intensity','float32',(25,),'mv')
-    vars.addvar('WINT',     'W-beam intensity','float32',(25,),'mv')
-    vars.addvar('SNRU',     'U-beam SNR','float32',(25,),'')
-    vars.addvar('SNRV',     'V-beam SNR','float32',(25,),'')
-    vars.addvar('SNRW',     'W-beam SNR','float32',(25,),'')
-    vars.addvar('SDS',      '','float32',(25,),'')
-    vars.addvar('SDW',      '','float32',(25,),'')
-    vars.addvar('GUST',     'Wind gust speed','float32',(25,),'m/s')
-    vars.addvar('TMPC',     'Air Temperature C','float32',1,'C')
-    vars.addvar('BATV',     'Battery Voltage','float32',1,'V')
-    vars.addvar('ANTSTAT',  'Anteanna Status',str,5,'')
-    vars.addvar('HEAT',     'Heater Status',str,5,'')
-    vars.addvar('GEN',      'Generator Status',str,5,'')
-    vars.addvar('FUEL',     'Fuel Status',str,5,'')
-    vars.addvar('RAIN',     'Precipitation Detector','float32',1,'')
-    vars.addvar('SNOW',     'Snow Detector','float32',1,'')
-    vars.addvar('RH',       'Relative Humidity','float32',1,'%')
-    vars.addvar('PRES',     'Surface Pressure','float32',1,'hPa')
-    vars.addvar('DEWP',     'Dew point temperature','float32',1,'C')
+    init_fixed_vars = FixedVariableList()
+    init_fixed_vars.addvar('HEIGHT','m AGL','int',np.arange(25)*10+10)
+    init_vars = VariableList()
+    init_vars.addvar('DATTIM',   'seconds since 1970-01-01 00:00 UTC',int,1,'S')
+    init_vars.addvar('STNAME',   'Station Name',str,20,'')
+    init_vars.addvar('WSPD',     'Wind speed','float32',(25,),'m/s')
+    init_vars.addvar('WDIR',     'Wind direction','float32',(25,),'deg')
+    init_vars.addvar('WVERT',    'Vertical wind speed','float32',(25,),'m/s')
+    init_vars.addvar('UINT',     'U-beam intensity','float32',(25,),'mv')
+    init_vars.addvar('VINT',     'V-beam intensity','float32',(25,),'mv')
+    init_vars.addvar('WINT',     'W-beam intensity','float32',(25,),'mv')
+    init_vars.addvar('SNRU',     'U-beam SNR','float32',(25,),'')
+    init_vars.addvar('SNRV',     'V-beam SNR','float32',(25,),'')
+    init_vars.addvar('SNRW',     'W-beam SNR','float32',(25,),'')
+    init_vars.addvar('SDS',      '','float32',(25,),'')
+    init_vars.addvar('SDW',      '','float32',(25,),'')
+    init_vars.addvar('GUST',     'Wind gust speed','float32',(25,),'m/s')
+    init_vars.addvar('TMPC',     'Air Temperature C','float32',1,'C')
+    init_vars.addvar('BATV',     'Battery Voltage','float32',1,'V')
+    init_vars.addvar('ANTSTAT',  'Anteanna Status',str,5,'')
+    init_vars.addvar('HEAT',     'Heater Status',str,5,'')
+    init_vars.addvar('GEN',      'Generator Status',str,5,'')
+    init_vars.addvar('FUEL',     'Fuel Status',str,5,'')
+    init_vars.addvar('RAIN',     'Precipitation Detector','float32',1,'')
+    init_vars.addvar('SNOW',     'Snow Detector','float32',1,'')
+    init_vars.addvar('RH',       'Relative Humidity','float32',1,'%')
+    init_vars.addvar('PRES',     'Surface Pressure','float32',1,'hPa')
+    init_vars.addvar('DEWP',     'Dew point temperature','float32',1,'C')
     
     # instance variables
     i=0

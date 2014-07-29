@@ -3,6 +3,8 @@ Pyodec root functionality
 """
 import importlib
 
+version = '0.5.9'
+
 def decode(source, decoder, *args, **kwargs):
     """
     import and execute a file or string decoder on a certain class

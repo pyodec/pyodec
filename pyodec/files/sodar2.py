@@ -13,12 +13,12 @@ time.tzset()
 
 class SodarGrid1(FileDecoder):
     #code
-    vars = VariableList()
-    vars.addvar('DATTIM','Observation time','int',1,'Seconds since 1970 1 1 00:00:00 UTC')
-    vars += sd.decoder.vars # and add the vars from the message decoder
-    vars.addvar('OBSTART','Begging of Ob time bin','int',1,'Seconds since 1970 1 1 00:00:00 UTC')
-    vars.addvar('OBEND','End of ob time bin','int',1,'Seconds since 1970 1 1 00:00:00 UTC')
-    fixed_vars = sd.decoder.fixed_vars
+    init_vars = VariableList()
+    init_vars.addvar('DATTIM','Observation time','int',1,'Seconds since 1970 1 1 00:00:00 UTC')
+    init_vars += sd.decoder.vars # and add the vars from the message decoder
+    init_vars.addvar('OBSTART','Begging of Ob time bin','int',1,'Seconds since 1970 1 1 00:00:00 UTC')
+    init_vars.addvar('OBEND','End of ob time bin','int',1,'Seconds since 1970 1 1 00:00:00 UTC')
+    init_fixed_vars = sd.decoder.fixed_vars
     
     def on_chunk(self, message):
         # grab the time from this message

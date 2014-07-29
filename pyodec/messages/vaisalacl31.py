@@ -3,13 +3,14 @@ import numpy as np
 
 
 class cl31Dm2(MessageDecoder):
-    vars = VariableList()
-    vars.addvar('BS','Attenuated Backscatter coefficient','float32',(770,),'1/(m sr)')
-    vars.addvar('STATUS','CL-31 Status information','float32',(13,),'Null')
+    init_vars = VariableList()
+    init_vars.addvar('BS','Attenuated Backscatter coefficient','float32',(770,),'1/(m sr)')
+    init_vars.addvar('STATUS','CL-31 Status information','float32',(13,),'Null')
 
     # for now we are going to assume height is fixed, and return it as such
-    fixed_vars = FixedVariableList()
-    fixed_vars.addvar('HEIGHT','m AGL','int',np.arange(770)*10)
+    init_fixed_vars = FixedVariableList()
+    init_fixed_vars.addvar('HEIGHT','m AGL','int',np.arange(770)*10)
+    
     def decode(self, message):
         OB_LENGTH = 770  # FIXME - the current return length is limited to 770
         SCALING_FACTOR = 1.0e9
@@ -64,11 +65,11 @@ decoder for Viasala-BL-view produced .his data files from a CL-31
     NO status information is provided with this data format.
 '''
 class cl31HisD(MessageDecoder):
-    vars = VariableList()
-    vars.addvar('DATTIM','seconds since 1970-01-01 00:00 UTC',int,1,'S')
-    vars.addvar('BS','Attenuated backscatter coefficient','float32',(480,),'1/(m sr)')
-    fixed_vars = FixedVariableList()
-    fixed_vars.addvar('HEIGHT','m AGL','int',np.arange(770)*10)
+    init_vars = VariableList()
+    init_vars.addvar('DATTIM','seconds since 1970-01-01 00:00 UTC',int,1,'S')
+    init_vars.addvar('BS','Attenuated backscatter coefficient','float32',(480,),'1/(m sr)')
+    init_fixed_vars = FixedVariableList()
+    init_fixed_vars.addvar('HEIGHT','m AGL','int',np.arange(770)*10)
     def decode(self, message):
         if len(message) < 300:
             return False
