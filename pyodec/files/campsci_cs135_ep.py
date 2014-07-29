@@ -10,10 +10,10 @@ import traceback
 Campbell Scienfitic CS-135 with message 006 and epoch timestamps
 """
 class Epcs135D(FileDecoder):
-    vars = VariableList()
-    vars.addvar('DATTIM','Observation time',int,1,'seconds since 1970-01-01 00:00 UTC') 
-    vars += msgdecode.vars
-    fixed_vars = msgdecode.fixed_vars
+    init_vars = VariableList()
+    init_vars.addvar('DATTIM','Observation time',int,1,'seconds since 1970-01-01 00:00 UTC') 
+    init_vars += msgdecode.vars
+    init_fixed_vars = msgdecode.fixed_vars
     
     def on_chunk(self, message):
         """

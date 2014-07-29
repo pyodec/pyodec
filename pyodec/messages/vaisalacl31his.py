@@ -10,6 +10,13 @@ decoder for Viasala-BL-view produced .his data files from a CL-31
     NO status information is provided with this data format.
 '''
 class cl31HisD(MessageDecoder):
+    init_vars = VariableList()
+    init_vars.addvar('DATTIM','seconds since 1970-01-01 00:00 UTC',int,1,'S') 
+    init_vars.addvar('BS','Attenuated backscatter coefficient','float32',(480,),'1/(m sr)')
+
+    init_fixed_vars = FixedVariableList()
+    init_fixed_vars.addvar('HEIGHT','m AGL','int',np.arange(770)*10)
+
     def decode(self, message):
         if len(message) < 300:
             return False
@@ -34,15 +41,5 @@ def twos_comp(val, bits):
         val = val - (1 << bits)
     return val
 
-# set decoder parameters for this type of message.
 
-vvars = VariableList()
-vvars.addvar('DATTIM','seconds since 1970-01-01 00:00 UTC',int,1,'S') 
-vvars.addvar('BS','Attenuated backscatter coefficient','float32',(480,),'1/(m sr)')
-
-
-# for now we are going to assume height is fixed, and return it as such
-fvars = FixedVariableList()
-fvars.addvar('HEIGHT','m AGL','int',np.arange(770)*10)
-
-decoder = cl31HisD(vars=vvars,fixed_vars=fvars)
+decoder = cl31HisD()
