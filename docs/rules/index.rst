@@ -32,14 +32,14 @@ Decoders should produce a generator object, (usually using yield), and should al
 Required ``.decode()`` keyword arguments
 *****************************************
 
-============= ==== ======= =============================================================================================
+============= ==== ======= ===========================================================
 Argument      Type Default Purpose                                                                                        
-============= ==== ======= =============================================================================================
+============= ==== ======= ===========================================================
 ``limit``     int  1000    Number of discrete data results
                            to accumulate before yielding                                  
 ``generator`` bool False   Produce a generator based on limit, 
                            or a single set of values representing the entire dataset. 
-============= ==== ======= =============================================================================================
+============= ==== ======= ===========================================================
 
 Warning Not all decoders at this time implement this protocol, and simply return generators at all times.
 These input requirements will evolve and expand over time (such as a requirement to handle certain keyword arguments properly)

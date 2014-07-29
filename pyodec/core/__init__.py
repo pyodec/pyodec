@@ -8,12 +8,14 @@ class Decoder(object):
     The root decoer object, primarily controls and standardizes interaction
     between 
     """
+    init_vars = False
     vars = None
     """
         Holds the decoder class' ``VariableList`` object. 
         
         VariableLists are a **class** attribute, which allows the developer to define the ``vars`` value without rewriting the ``__init__()`` method. Variables should be either a constant for all uses of the decoder, or a variable that changes in the process of decoding. Thus, this may limit the ability to execute multiple decoders in a thread.
     """
+    init_fixed_vars = False
     fixed_vars = None
     """
     the location of the ``FixedVariableList`` object within a ``Decoder``
@@ -56,10 +58,10 @@ class Decoder(object):
             self.vars = self.inherit.vars
             self.fixed_vars = self.inherit.fixed_vars
         # or, on init, you can further redefine what the variables are.
-        if vars:
-            self.vars = vars
-        if fixed_vars:
-            self.fixed_vars = fixed_vars
+        if self.init_vars:
+            self.vars = self.init_vars
+        if self.init_fixed_vars:
+            self.fixed_vars = self.init_fixed_vars
         else:
             self.fixed_vars = FixedVariableList()
         # then, at the end, if vars still has not been set, then we sortof fail.
@@ -117,7 +119,7 @@ class FileDecoder(Decoder):
             return d
     def __line_read(self, gfhandle):
         """
-        This method lets you define the behavior for reading every line
+            reads every line in a file -- except those beginning with ::
         """
         for line in gfhandle:
             if line[:2] == '::': continue

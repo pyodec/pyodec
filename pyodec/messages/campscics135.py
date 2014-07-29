@@ -7,52 +7,47 @@ decode message 006 from a Campbell Scientific CS135
 
 class cs135Dm6(MessageDecoder):
     # set decoder parameters for this type of message.
-
-    vars = VariableList()
+    init_vars = VariableList()
+    
     # line 1
-    vars.addvar('INSTRID','Instrument self-identification character','str',1,'')
-    vars.addvar('OPS','CS135 Operating System',str,1,'')
-    vars.addvar('MSG','CS135 Message format number',str,3,'')
+    init_vars.addvar('INSTRID','Instrument self-identification character','str',1,'')
+    init_vars.addvar('OPS','CS135 Operating System',str,1,'')
+    init_vars.addvar('MSG','CS135 Message format number',str,3,'')
     # line 2
-    vars.addvar('CLSTAT','Cloud detection status',str,1,'')
-    vars.addvar('TRANS','CS135 window transmission',int,1,'%')
-    vars.addvar('VVIS','Vertical visibility',int,1,'m or ft')
-    vars.addvar('FIRST_CLOUD','Lowest cloud height',int,1,'m or ft')
-    vars.addvar('SECOND_CLOUD','second cloud level height',int,1,'m or ft')
-    vars.addvar('HIGHEST_SIG','Highest received bacskcatter signal',int,1,'m or ft')
-    vars.addvar('THIRD_CLOUD','Lowest cloud height',int,1,'m or ft')
-    vars.addvar('FOURTH_CLOUD','Lowest cloud height',int,1,'m or ft')
-    vars.addvar('ALARMS','ALARMS and WARNINGS',bool,(48,),'boolean')
+    init_vars.addvar('CLSTAT','Cloud detection status',str,1,'')
+    init_vars.addvar('TRANS','CS135 window transmission',int,1,'%')
+    init_vars.addvar('VVIS','Vertical visibility',int,1,'m or ft')
+    init_vars.addvar('FIRST_CLOUD','Lowest cloud height',int,1,'m or ft')
+    init_vars.addvar('SECOND_CLOUD','second cloud level height',int,1,'m or ft')
+    init_vars.addvar('HIGHEST_SIG','Highest received bacskcatter signal',int,1,'m or ft')
+    init_vars.addvar('THIRD_CLOUD','Lowest cloud height',int,1,'m or ft')
+    init_vars.addvar('FOURTH_CLOUD','Lowest cloud height',int,1,'m or ft')
+    init_vars.addvar('ALARMS','ALARMS and WARNINGS',bool,(48,),'boolean')
     # line 3
     for i in range(5):
-        vars.addvar('COVERAGE_CLD{}'.format(i+1),
+        init_vars.addvar('COVERAGE_CLD{}'.format(i+1),
                     'Cloud coverage for layer {}'.format(i+1),int,1,'oktas')
-        vars.addvar('CLDHT_'+str(i+1),
+        init_vars.addvar('CLDHT_'+str(i+1),
                     'Height of cloud level {} in 10s of m or 100s of ft'.format(i+1),
                     int,1,'10s of m or 100s of  ft')
     # line 4
-    vars.addvar('SCALE','Scale Parameter',int,1,'%')
-    vars.addvar('RESOLUTION','Backscatter profile resolution',int,1,'m')
-    vars.addvar('LENGTH','Profile length (number of bins)',int,1,'')
-    vars.addvar('PULSE_ENERGY','Laser pulse energy',int,1,'%')
-    vars.addvar('LASERTEMP','Laser temperature',int,1,'C') # includes +/-
-    vars.addvar('TILT','Total tilt angle',int,1,'degrees')
-    vars.addvar('BACKGROUND_RAD','Background light at internal ADC',int,1,'mv',mn=0,mx=2500)
-    vars.addvar('PULSEQ','Pulse quantitiy x 1000',int,1,'',mx=9999,mn=0)
-    vars.addvar('RATE','Pulse rate',int,1,'MHz',mx=99,mn=0)
-    vars.addvar('SUM','Sum of detected, normalized backscatter multiplied by scale*10^4',int,1,'srad^-1',mn=0,mx=999)
+    init_vars.addvar('SCALE','Scale Parameter',int,1,'%')
+    init_vars.addvar('RESOLUTION','Backscatter profile resolution',int,1,'m')
+    init_vars.addvar('LENGTH','Profile length (number of bins)',int,1,'')
+    init_vars.addvar('PULSE_ENERGY','Laser pulse energy',int,1,'%')
+    init_vars.addvar('LASERTEMP','Laser temperature',int,1,'C') # includes +/-
+    init_vars.addvar('TILT','Total tilt angle',int,1,'degrees')
+    init_vars.addvar('BACKGROUND_RAD','Background light at internal ADC',int,1,'mv',mn=0,mx=2500)
+    init_vars.addvar('PULSEQ','Pulse quantitiy x 1000',int,1,'',mx=9999,mn=0)
+    init_vars.addvar('RATE','Pulse rate',int,1,'MHz',mx=99,mn=0)
+    init_vars.addvar('SUM','Sum of detected, normalized backscatter multiplied by scale*10^4',int,1,'srad^-1',mn=0,mx=999)
     for i in range(3):
         ist = str(i+1)
-        vars.addvar('MLH'+ist,'Mixing layer height # '+ist,int,1,'m')
-        vars.addvar('MLH_QUAL'+ist,'MLH Quality parameter for layer #'+ist,
+        init_vars.addvar('MLH'+ist,'Mixing layer height # '+ist,int,1,'m')
+        init_vars.addvar('MLH_QUAL'+ist,'MLH Quality parameter for layer #'+ist,
                     str, 5, '')
     # line 5
-    vars.addvar('BS','Attenuated, Normalized, Backscatter coefficient','float32',(2048,),'1/(m sr)')
-
-    # for now we are going to assume height is fixed, and return it as such
-    fixed_vars = FixedVariableList()
-    fixed_vars.addvar('HEIGHT','m AGL','int',np.arange(2048)*5)
-    
+    init_vars.addvar('BS','Attenuated, Normalized, Backscatter coefficient','float32',(2048,),'1/(m sr)')    
     def decode(self, message):
         OB_LENGTH = 2048 # appears tho be fixed in this format
         SCALING_FACTOR = 1.0e9 # also appears to be fixed
@@ -144,4 +139,3 @@ def twos_comp(val, bits):
     return val
 
 decoder = cs135Dm6()
-
