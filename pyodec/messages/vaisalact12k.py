@@ -1,4 +1,4 @@
-from decoders.core import MessageDecoder, VariableList, FixedVariableList
+from pyodec.core import MessageDecoder, VariableList, FixedVariableList
 import numpy as np
 from numpy import array,float32,uint8, zeros
 
@@ -64,8 +64,8 @@ class ct12D(MessageDecoder):
 # set decoder parameters for this type of message.
 
 vvars = VariableList()
-vvars.addvar('BS','uint16',(250,),'DD') # PYDAP doesn't handle uint16 well
-vvars.addvar('STATUS','float32',(25,),'Null')
+vvars.addvar('BS','CT12k Backscatter coefficient','uint16',(250,),'DD') # PYDAP doesn't handle uint16 well
+vvars.addvar('STATUS',"CT12k instrument status variables",'float32',(25,),'Null')
 
 # for now we are going to assume height is fixed, and return it as such
 fvars = FixedVariableList()

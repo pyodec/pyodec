@@ -1,4 +1,4 @@
-init_from pyodec.core import FileDecoder, VariableList, FixedVariableList
+from pyodec.core import FileDecoder, VariableList, FixedVariableList
 import numpy as np
 import os
 import time

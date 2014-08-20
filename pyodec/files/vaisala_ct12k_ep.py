@@ -1,5 +1,5 @@
-from decoders.core import FileDecoder
-from decoders.messages.vaisalact12k import decoder as msgdecode
+from pyodec.core import FileDecoder, VariableList
+from pyodec.messages.vaisalact12k import decoder as msgdecode
 import numpy as np
 import os
 import time
