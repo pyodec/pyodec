@@ -35,7 +35,7 @@ class Epct12kD(FileDecoder):
             print "NO SUCH FILE"
             return 
         gzfh = self.open_ascii(filepath)
-        for d in self.read_chunks_gen(yieldcount, gzfh,end=unichr(003)):
+        for d in self.read_chunks(yieldcount, gzfh,end=unichr(003)):
             yield d
         gzfh.close()
 
