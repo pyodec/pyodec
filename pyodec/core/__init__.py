@@ -220,6 +220,9 @@ class FileDecoder(Decoder):
     
     @classmethod
     def open_ascii(cls, filepath):
+        if type(filepath) != str:
+            # then we will assume a file was passed, not its path.
+            return filepath
         if not os.path.exists(filepath):
             raise NameError('File Not Found')
         if os.path.splitext(filepath)[1] == '.gz':
